@@ -32,10 +32,10 @@
         #define MAGE_ERROR(...) DebugTools::GetLogger()->error(__VA_ARGS__)
         #define MAGE_OUTPUT(arg) MAGE_INFO("{0}", arg)
         // Custom allocators
-        #define MAGE_ALLOC(arg) new arg;
-        #define MAGE_ALLOC_ARRAY(arg, size) new arg[size];
-        #define MAGE_FREE(arg) delete arg;
-        #define MAGE_FREE_ARRAY(arg) delete[] arg;
+        #define MAGE_ALLOC(arg) new arg; DebugTools::TrackAllocation()
+        #define MAGE_ALLOC_ARRAY(arg, size) new arg[size]; DebugTools::TrackAllocation()
+        #define MAGE_FREE(arg) delete arg; DebugTools::TrackFree()
+        #define MAGE_FREE_ARRAY(arg) delete[] arg; DebugTools::TrackFree()
     #else
         #define MAGE_INFO(...)
         #define MAGE_WARN(...)

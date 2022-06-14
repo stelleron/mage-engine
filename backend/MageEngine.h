@@ -1,6 +1,18 @@
 #ifndef MAGE_ENGINE_H
     #define MAGE_ENGINE_H
-    // ===== Utility libraries
+    // ===== Standard dependencies =====
+    #include <string>
+    // ===== Utility libraries =====
     #include "utils/Base.h"
     #include "utils/DebugTools.h"
+    // ===== Engine class =====
+    namespace Mage {
+        // Stores the game engine data
+        class MageEngine {
+            std::string resdir; // Directory to find resources
+            public:
+                MageEngine();
+                ~MageEngine();
+        };
+    };
 #endif

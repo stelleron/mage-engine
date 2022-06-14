@@ -8,4 +8,12 @@
         CMD_RUN_DIR,
         CMD_RUN_CWD,
     };
+    // Struct for configuring the frontend
+    struct FrontendConfig {
+        InstructType itype;
+        const char* projectdir;
+        void* userdata;
+
+        FrontendConfig();
+    };
 #endif

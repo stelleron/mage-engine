@@ -42,6 +42,14 @@ int main(int argc, char** argv) {
     std::string projectDir = "None Given or Used";
     InstructType iType = handleArgs(argc, argv, &projectDir);
     MAGE_INFO("Project Directory: {0}", projectDir);
-    // Summarize
+    // Allocate space for the game engine and create the frontend config
+    MageEngine* engine = MAGE_ALLOC(MageEngine);
+    FrontendConfig config;
+        config.itype = iType;
+        config.projectdir = projectDir.c_str();
+        config.userdata = engine;
+    
+    // Free all data and summarize
+    MAGE_FREE(engine);
     DebugTools::Summarize();
 }
