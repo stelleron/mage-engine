@@ -1,4 +1,3 @@
-#include <iostream>
 #include <filesystem>
 #include <string.h>
 
@@ -17,6 +16,7 @@ InstructType handleArgs(int count, char** arguments, std::string* path) {
     else if (count == 2) {
         if (strcmp(arguments[1] , "run") == 0) {
             MAGE_INFO("Mage: Running project in the current directory...");
+            *path = std::filesystem::current_path();
             return CMD_RUN_CWD;
         }
     }
@@ -48,7 +48,9 @@ int main(int argc, char** argv) {
         config.itype = iType;
         config.projectdir = projectDir.c_str();
         config.userdata = engine;
-    
+    // Initialise and run the frontend
+    Frontend frontend(config);
+    frontend.runGame();
     // Free all data and summarize
     MAGE_FREE(engine);
     DebugTools::Summarize();
