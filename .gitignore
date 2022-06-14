@@ -6,5 +6,6 @@ mage.make
 all.sh
 re.sh
 commit.sh
+run.sh
 .DS_Store
 .vscode/
