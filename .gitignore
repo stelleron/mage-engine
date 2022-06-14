@@ -1,0 +1,10 @@
+build/
+testing/
+Makefile
+exec.make 
+mage.make
+all.sh
+re.sh
+commit.sh
+.DS_Store
+.vscode/
