@@ -19,6 +19,9 @@ InstructType handleArgs(int count, char** arguments, std::string* path) {
             *path = std::filesystem::current_path();
             return CMD_RUN_CWD;
         }
+        if (strcmp(arguments[1], "help") == 0) {
+            return CMD_HELP;
+        }
     }
     // If there are three arguments, check what they are
     else if (count == 3) {
@@ -41,17 +44,14 @@ int main(int argc, char** argv) {
     // Handle the given arguments
     std::string projectDir = "None Given or Used";
     InstructType iType = handleArgs(argc, argv, &projectDir);
-    MAGE_INFO("Project Directory: {0}", projectDir);
-    // Allocate space for the game engine and create the frontend config
-    MageEngine* engine = MAGE_ALLOC(MageEngine);
+    // If CMD_NONE was returned, exit the app
+    if (iType == CMD_NONE) {
+        return 0;
+    }
+    // Create the frontend config
     FrontendConfig config;
         config.itype = iType;
         config.projectdir = projectDir.c_str();
-        config.userdata = engine;
-    // Initialise and run the frontend
+    // Initialise the frontend
     Frontend frontend(config);
-    frontend.runGame();
-    // Free all data and summarize
-    MAGE_FREE(engine);
-    DebugTools::Summarize();
 }

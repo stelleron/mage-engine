@@ -5,6 +5,8 @@
     // ===== Utility libraries =====
     #include "utils/Base.h"
     #include "utils/DebugTools.h"
+    #include "utils/Color.h"
+    #include "utils/MageConfig.h"
     // ===== Engine class =====
     namespace Mage {
         // Stores the game engine data

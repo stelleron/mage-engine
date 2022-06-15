@@ -1,0 +1,21 @@
+[project]
+name = "Pong"
+author = "stelleron"
+mainfile = "Main.wren"
+app = "PongGame" # The variable in which the game instance is stored
+
+[dirs]
+source = "/src"
+resource_folder = "/res"
+
+[window]
+width = 1080
+height = 720
+resizable = true
+maximized = false
+fullscreen = false
+vsync = true
+background_col = [20, 20, 20, 255] # Stores a Color value
+
+[extensions]
+extensions = [] # Choose what extensions to load (by default they're stored in the extensions folder)

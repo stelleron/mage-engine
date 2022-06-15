@@ -4,21 +4,24 @@
     // Enums to check the instruction type given to the MAGE application
     enum InstructType {
         CMD_NONE = 0,
+
+        CMD_HELP,
         
-        CMD_RUN_FUSED,
-        CMD_RUN_DIR,
-        CMD_RUN_CWD,
+        CMD_RUN_FUSED, // Run the fused .mageproj stored in the MAGE engine
+        CMD_RUN_DIR, // Run the project at the given directory
+        CMD_RUN_CWD, // Run the project in the current directory
     };
     // Struct for configuring the frontend
     struct FrontendConfig {
         InstructType itype;
         const char* projectdir;
-        void* userdata;
 
         FrontendConfig();
     };
     // Class to interface with the frontend
-    class Frontend {  
+    class Frontend { 
+        // Is the game running?
+        bool gameRun; 
         // Wren data
         WrenVM* vm;
         WrenConfiguration wrenConfig;
