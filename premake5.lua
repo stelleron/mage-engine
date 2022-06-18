@@ -1,7 +1,7 @@
 -- premake5.lua
 workspace "MageEngine"
     architecture "x64"
-    configurations {"Debug", "Release"} 
+    configurations {"Debug", "Release", "Dist"} 
 
 project "mage"
     kind "SharedLib"
@@ -22,6 +22,10 @@ project "mage"
         symbols "On"
 
     filter "configurations:Release"
+        defines { "DEBUG" }
+        optimize "On"
+
+    filter "configurations:Dist"
         defines { "NDEBUG" }
         optimize "On"
 
@@ -43,6 +47,10 @@ project "exec"
         symbols "On"
 
     filter "configurations:Release"
+        defines { "DEBUG" }
+        optimize "On"
+
+    filter "configurations:Dist"
         defines { "NDEBUG" }
         optimize "On"
     
