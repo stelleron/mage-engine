@@ -29,19 +29,20 @@
     };
     // Class to interface with the frontend
     class Frontend { 
+        // Stores the wren handles for the MAGE application
+        struct MageApplication {
+            WrenHandle* mainInstance;
+            WrenHandle* initFunc;
+            WrenHandle* updateFunc;
+            WrenHandle* renderFunc;
+        };
         bool gameRun; // Should the game be run?
         // Wren data
         WrenVM* vm;
         WrenConfiguration wrenConfig;
         // User data
         UserData uData;
-        // Stores the wren handles for the MAGE application
-        struct MageApplication {
-            WrenHandle* appInstance;
-            WrenHandle* initFunc;
-            WrenHandle* updateFunc;
-            WrenHandle* renderFunc;
-        };
+        MageApplication app;
         public:
             Frontend(const FrontendConfig& config);
             ~Frontend();

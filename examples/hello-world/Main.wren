@@ -1,1 +1,5 @@
-System.print("Hello World!")
+class Main {
+    construct new() {
+        System.print("Hello World")
+    }
+}

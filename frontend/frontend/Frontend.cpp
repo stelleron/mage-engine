@@ -68,7 +68,7 @@ std::string Frontend::getSource(const char* module) {
     if (uData.runType == CMD_RUN_CWD || uData.runType == CMD_RUN_DIR) {
         // If the project being run is a directory, navigate to and load the source file
         std::string path = uData.projectDir;
-        path += "/Main.wren";
+        path += "/main.wren";
         return loadFile(path);
     }
     else if (uData.runType == CMD_RUN_FUSED || uData.runType == CMD_RUN_CWD_PACKAGE 
@@ -82,7 +82,11 @@ std::string Frontend::getSource(const char* module) {
 }
 
 void Frontend::runGame() {
-    interpretMain(); // First interpret main
+    interpretMain(); // First interpret main.wren
+    // Then load the Wren handles of the Main class
+    wrenEnsureSlots(vm, 1);
+    wrenGetVariable(vm, "main", "Main", 0);
+    
 }
 
 void Frontend::interpretMain() {
