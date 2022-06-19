@@ -56,9 +56,6 @@ Frontend::Frontend(const FrontendConfig& config) {
         wrenConfig.errorFn = errorFn;
         vm = wrenNewVM(&wrenConfig);
         MAGE_INFO("Frontend: Loaded the Wren VM!");
-        // Load the config.toml annd configure the game engine
-        std::string configDir = config.projectdir;
-        configDir += "/config.toml";
     }
 }
 

@@ -1,5 +1,4 @@
 build/
-testing/
 Makefile
 exec.make 
 mage.make

@@ -1,4 +1,3 @@
-#include <filesystem>
 #include <string.h>
 
 #include "MageEngine.h"
@@ -16,7 +15,6 @@ InstructType handleArgs(int count, char** arguments, std::string* path) {
     else if (count == 2) {
         if (strcmp(arguments[1] , "run") == 0) {
             MAGE_INFO("Mage: Running project in the current directory...");
-            *path = std::filesystem::current_path();
             return CMD_RUN_CWD;
         }
         if (strcmp(arguments[1], "help") == 0) {
