@@ -1,6 +1,7 @@
 #ifndef MAGE_FRONTEND_H
     #define MAGE_FRONTEND_H
     #include "wren.hpp"
+    #include <string>
     // Enums to check the instruction type given to the MAGE application
     enum InstructType {
         CMD_NONE = 0,
@@ -22,6 +23,8 @@
     class Frontend { 
         // Should the game be run?
         bool gameRun; 
+        // The project directory
+        std::string projectdir;
         // Wren data
         WrenVM* vm;
         WrenConfiguration wrenConfig;
@@ -34,6 +37,7 @@
             Frontend(const FrontendConfig& config);
             ~Frontend();
 
+            void interpretMain();
             void runGame();
     };
 #endif

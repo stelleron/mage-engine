@@ -26,6 +26,7 @@ InstructType handleArgs(int count, char** arguments, std::string* path) {
         if (strcmp(arguments[1] , "run") == 0) {
             MAGE_INFO("Mage: Running a project with a given directory...");
             *path = arguments[2];
+            MAGE_INFO("Directory given: {0}", *path);
             return CMD_RUN_DIR;
         } 
     }

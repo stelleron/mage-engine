@@ -56,11 +56,27 @@ Frontend::Frontend(const FrontendConfig& config) {
         wrenConfig.errorFn = errorFn;
         vm = wrenNewVM(&wrenConfig);
         MAGE_INFO("Frontend: Loaded the Wren VM!");
+        // Store the project directory
+        projectdir = config.projectdir;
     }
 }
 
 void Frontend::runGame() {
 
+}
+
+void Frontend::interpretMain() {
+    std::string path = projectdir + "/Main.wren";
+    WrenInterpretResult result = wrenInterpret(vm, "main", loadFile(path)); 
+    // Then handle the results of the interpretation
+    switch (result) {
+    case WREN_RESULT_COMPILE_ERROR:
+      { warn("Compile Error!"); } break;
+    case WREN_RESULT_RUNTIME_ERROR:
+      { warn("Runtime Error!"); } break;
+    case WREN_RESULT_SUCCESS:
+      { info("Success!"); } break;
+    }
 }
 
 Frontend::~Frontend() {
