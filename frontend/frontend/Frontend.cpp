@@ -56,26 +56,43 @@ Frontend::Frontend(const FrontendConfig& config) {
         wrenConfig.errorFn = errorFn;
         vm = wrenNewVM(&wrenConfig);
         MAGE_INFO("Frontend: Loaded the Wren VM!");
-        // Store the project directory
-        projectdir = config.projectdir;
+        // Store the project directory and run type
+        uData.runType = config.itype;
+        // Now run the game
+        runGame();
+    }
+}
+
+std::string Frontend::getSource(const char* module) {
+    if (uData.runType == CMD_RUN_CWD || uData.runType == CMD_RUN_DIR) {
+        // If the project being run is a directory, navigate to and load the source file
+        return "System.print(45)";
+    }
+    else if (uData.runType == CMD_RUN_FUSED || uData.runType == CMD_RUN_CWD_PACKAGE 
+            || uData.runType == CMD_RUN_DIR_PACKAGE) {
+        // If the project has been packaged, get the module source from the .mageproj file
+        return "System.print(45)";
+    }
+    else {
+        return "None";
     }
 }
 
 void Frontend::runGame() {
-
+    interpretMain(); // First interpret main
 }
 
 void Frontend::interpretMain() {
-    std::string path = projectdir + "/Main.wren";
-    WrenInterpretResult result = wrenInterpret(vm, "main", loadFile(path)); 
+    std::string source = getSource("main");
+    WrenInterpretResult result = wrenInterpret(vm, "main", source.c_str()); 
     // Then handle the results of the interpretation
     switch (result) {
     case WREN_RESULT_COMPILE_ERROR:
-      { warn("Compile Error!"); } break;
+      { MAGE_ERROR("Wren: Encountered a compile error while running the project!"); } break;
     case WREN_RESULT_RUNTIME_ERROR:
-      { warn("Runtime Error!"); } break;
+      { MAGE_ERROR("Wren: Encountered a runtime error while running the project!"); } break;
     case WREN_RESULT_SUCCESS:
-      { info("Success!"); } break;
+      { MAGE_INFO("Wren: Succesfully compiled main!"); } break;
     }
 }
 
