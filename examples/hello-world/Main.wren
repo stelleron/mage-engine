@@ -1,5 +1,1 @@
-class Main is MageApplication {
-    construct new() {
-        super()
-    }
-}
+System.print("Hello World!")

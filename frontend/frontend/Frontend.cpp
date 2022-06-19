@@ -58,6 +58,7 @@ Frontend::Frontend(const FrontendConfig& config) {
         MAGE_INFO("Frontend: Loaded the Wren VM!");
         // Store the project directory and run type
         uData.runType = config.itype;
+        uData.projectDir = config.projectdir;
         // Now run the game
         runGame();
     }
@@ -66,7 +67,9 @@ Frontend::Frontend(const FrontendConfig& config) {
 std::string Frontend::getSource(const char* module) {
     if (uData.runType == CMD_RUN_CWD || uData.runType == CMD_RUN_DIR) {
         // If the project being run is a directory, navigate to and load the source file
-        return "System.print(45)";
+        std::string path = uData.projectDir;
+        path += "/Main.wren";
+        return loadFile(path);
     }
     else if (uData.runType == CMD_RUN_FUSED || uData.runType == CMD_RUN_CWD_PACKAGE 
             || uData.runType == CMD_RUN_DIR_PACKAGE) {

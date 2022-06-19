@@ -25,6 +25,7 @@
     // Struct for storing user data
     struct UserData {
         InstructType runType;
+        std::string projectDir;
     };
     // Class to interface with the frontend
     class Frontend { 
@@ -34,11 +35,13 @@
         WrenConfiguration wrenConfig;
         // User data
         UserData uData;
-        // Wren handles for the application
-        WrenHandle* appInstance;
-        WrenHandle* initFunc;
-        WrenHandle* updateFunc;
-        WrenHandle* renderFunc;
+        // Stores the wren handles for the MAGE application
+        struct MageApplication {
+            WrenHandle* appInstance;
+            WrenHandle* initFunc;
+            WrenHandle* updateFunc;
+            WrenHandle* renderFunc;
+        };
         public:
             Frontend(const FrontendConfig& config);
             ~Frontend();
