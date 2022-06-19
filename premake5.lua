@@ -1,7 +1,7 @@
 -- premake5.lua
 workspace "MageEngine"
     architecture "x64"
-    configurations {"Debug", "Release", "Dist"} 
+    configurations {"Debug", "Release", "Dist"} -- Debug is used during the design of the backend, Release is for writing games in Wren and Dist is for publishing
 
 project "mage"
     kind "SharedLib"

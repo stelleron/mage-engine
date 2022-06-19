@@ -38,6 +38,31 @@ void errorFn(WrenVM* vm, WrenErrorType errorType, const char* module, const int 
 // Create the game config from the config.toml file 
 MageConfig getConfigFromTOML(const toml::value& config) {
     MageConfig engineConf = MageConfig();
+
+    // Get all the configs
+    toml::value project_config = toml::find(config, "project");
+    toml::value window_config = toml::find(config, "window");
+
+    // Configure the window data
+    if(window_config.contains("width")) 
+        engineConf.width = toml::find<int>(window_config, "width");
+    if(window_config.contains("height"))
+        engineConf.height = toml::find<int>(window_config, "height"); 
+    if(window_config.contains("title"))
+        engineConf.windowTitle = toml::find<std::string>(window_config, "title"); 
+    else
+        engineConf.windowTitle = toml::find<std::string>(project_config, "name"); 
+    if (window_config.contains("background_col")) 
+        engineConf.backgroundColor = Color( toml::find<std::array<int, 4>>(window_config, "background_col") );
+    if (window_config.contains("resizable"))
+        engineConf.windowResizable = toml::find<bool>(window_config, "resizable");
+    if (window_config.contains("maximized"))
+        engineConf.windowMaximized = toml::find<bool>(window_config, "maximized");
+    if (window_config.contains("fullscreen"))
+        engineConf.windowFullscreen = toml::find<bool>(window_config, "fullscreen");
+    if (window_config.contains("vsync"))
+        engineConf.windowVSync = toml::find<bool>(window_config, "vsync");
+
     return engineConf;
 }
 
@@ -66,8 +91,6 @@ Frontend::Frontend(const FrontendConfig& config) {
         // Load the config.toml annd configure the game engine
         std::string configDir = config.projectdir;
         configDir += "/config.toml";
-        toml::value confFile = toml::parse(configDir);
-        auto gameConfig = getConfigFromTOML(confFile);
     }
 }
 

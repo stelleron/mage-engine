@@ -20,7 +20,7 @@
     };
     // Class to interface with the frontend
     class Frontend { 
-        // Is the game running?
+        // Should the game be run?
         bool gameRun; 
         // Wren data
         WrenVM* vm;
