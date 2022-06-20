@@ -5,7 +5,8 @@ class Main {
 
     #!main_func = "update"
     update(dt) {
-    
+        System.print(dt)
+        return true
     }
 
     #!main_func = "render"

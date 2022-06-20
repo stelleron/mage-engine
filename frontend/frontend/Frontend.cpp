@@ -1,5 +1,6 @@
 #include "Frontend.h"
 #include "MageEngine.h"
+#include <chrono>
 using namespace Mage;
 
 // Impl. for the frontend config
@@ -114,10 +115,14 @@ void Frontend::releaseFunctionHandles() {
 }
 
 void Frontend::runGameLoop() {
-    if (!gameClose) {
+    std::chrono::milliseconds deltatime(1000);
+    ENSURE_SLOTS(2);
+    while (!gameClose) {
         // Update func
         SET_HANDLE(app.mainInstance, 0);
+        SET_NUM(deltatime.count(), 1);
         CALL_FUNC(app.updateFunc);
+        gameClose = GET_BOOL(0);
         // Render func
         SET_HANDLE(app.mainInstance, 0);
         CALL_FUNC(app.renderFunc);
