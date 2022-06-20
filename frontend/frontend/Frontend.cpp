@@ -37,6 +37,7 @@ void errorFn(WrenVM* vm, WrenErrorType errorType, const char* module, const int 
 // Impl. for the frontend
 Frontend::Frontend(const FrontendConfig& config) {
     gameRun = false;
+    gameClose = false;
     // Check the run command to see what to do
     switch (config.itype) {
         case CMD_NONE: break;
@@ -81,13 +82,58 @@ std::string Frontend::getSource(const char* module) {
     }
 }
 
+void Frontend::loadMainClass() {
+    // Load the main class
+    ENSURE_SLOTS(1);
+    GET_VARIABLE("main", "Main", 0);
+    WrenHandle* constructor = MAKE_HANDLE("new()");
+    CALL_FUNC(constructor);
+    RELEASE_HANDLE(constructor);
+    app.mainInstance = GET_HANDLE(0);
+}
+
+void Frontend::loadFunctionHandles() {
+    WrenHandle* attribFunc = MAKE_HANDLE("attributes");
+    WrenHandle* methodAttribFunc = MAKE_HANDLE("methods");
+    GET_VARIABLE("main", "Main", 0);
+    CALL_FUNC(attribFunc);
+    CALL_FUNC(methodAttribFunc);
+    RELEASE_HANDLE(attribFunc);
+    RELEASE_HANDLE(methodAttribFunc);
+    // Now time to get the update, render and finish functions
+    app.updateFunc = MAKE_HANDLE("update(_)");
+    app.renderFunc = MAKE_HANDLE("render()");
+    app.finishFunc = MAKE_HANDLE("finish()");
+}
+
+void Frontend::releaseFunctionHandles() {
+    RELEASE_HANDLE(app.mainInstance);
+    RELEASE_HANDLE(app.updateFunc);
+    RELEASE_HANDLE(app.renderFunc);
+    RELEASE_HANDLE(app.finishFunc);
+}
+
+void Frontend::runGameLoop() {
+    if (!gameClose) {
+        // Update func
+        SET_HANDLE(app.mainInstance, 0);
+        CALL_FUNC(app.updateFunc);
+        // Render func
+        SET_HANDLE(app.mainInstance, 0);
+        CALL_FUNC(app.renderFunc);
+    }
+    // Finish func
+    SET_HANDLE(app.mainInstance, 0);
+    CALL_FUNC(app.finishFunc);
+}
+
 void Frontend::runGame() {
     interpretMain(); // First interpret main.wren
-    // Then load the Wren handles of the Main class
-    wrenEnsureSlots(vm, 1);
-    wrenGetVariable(vm, "main", "Main", 0);
-    
+    loadMainClass(); // Then load the Wren handles of the Main class
+    loadFunctionHandles(); // Then get all the visible functions attached to it
+    runGameLoop(); // Finally run the game loop endlessly
 }
+
 
 void Frontend::interpretMain() {
     std::string source = getSource("main");
@@ -107,6 +153,7 @@ Frontend::~Frontend() {
     // Free the Wren VM
     if (gameRun) {
         MAGE_INFO("Frontend: Freeing the Wren VM!");
+        releaseFunctionHandles(); // Release the function handles
         wrenFreeVM(vm);
     }
 }

@@ -1,6 +1,6 @@
 #ifndef MAGE_FRONTEND_H
     #define MAGE_FRONTEND_H
-    #include "wren.hpp"
+    #include "WrenMacros.h"
     #include <string>
     #define ENUM_NAME(arg) #arg
     // Enums to check the instruction type given to the MAGE application
@@ -32,11 +32,13 @@
         // Stores the wren handles for the MAGE application
         struct MageApplication {
             WrenHandle* mainInstance;
-            WrenHandle* initFunc;
+
             WrenHandle* updateFunc;
             WrenHandle* renderFunc;
+            WrenHandle* finishFunc;
         };
         bool gameRun; // Should the game be run?
+        bool gameClose; // Should the game be closed?
         // Wren data
         WrenVM* vm;
         WrenConfiguration wrenConfig;
@@ -48,7 +50,14 @@
             ~Frontend();
 
             std::string getSource(const char* module);
+
             void interpretMain();
             void runGame();
+
+            void loadMainClass();
+            void loadFunctionHandles();
+            void releaseFunctionHandles();
+            void runGameLoop();
+
     };
 #endif
