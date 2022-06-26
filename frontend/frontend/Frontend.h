@@ -57,6 +57,7 @@
             std::string getSource(const char* module);
 
             void interpretMain();
+            void declMageLib();
             void runGame();
 
             void loadMainClass();

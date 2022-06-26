@@ -38,7 +38,7 @@ project "exec"
     objdir "build/obj/frontend/"
 
     files {"frontend/**.cpp", "frontend/wren/**.cpp"}
-    includedirs {"backend/", "external/include/", "backend/modules/"}
+    includedirs {"backend/", "external/include/", "backend/modules/", "frontend/"}
     libdirs {"build/"}
     links {"mage"}
 

@@ -1,5 +1,8 @@
 #include "Frontend.h"
 #include "MageEngine.h"
+// Wren modules
+#include "modules/MageApp.h"
+
 using namespace Mage;
 
 // Impl. for the frontend config
@@ -53,6 +56,34 @@ WrenForeignClassMethods bindForeignClass(WrenVM* vm, const char* module, const c
     return fClass;
 }
 
+// Used to get the file source for MAGE modules
+const char* getMageModuleSource(const char* module) {
+    if (strcmp(module, MAGE_APP) == 0) {
+        return mageAppModule;
+    }
+    else {
+        return "";
+    }
+}
+
+// Get the file source
+const char* getSourceForModule(WrenVM* vm, const char* name) {
+    
+    // First check if the module is part of the mage modules
+    const char* modSource = getMageModuleSource(name);
+    if (strcmp(modSource, "") != 0) {
+        return modSource;
+    }
+    // Loading a file module
+    return "";
+}
+
+// Wren function for loading files
+WrenLoadModuleResult loadModuleFn(WrenVM* vm, const char* name) {
+    WrenLoadModuleResult result = {0};
+        result.source = getSourceForModule(vm, name);
+    return result;
+}
 
 // Impl. for the frontend
 Frontend::Frontend(const FrontendConfig& config) {
@@ -75,11 +106,14 @@ Frontend::Frontend(const FrontendConfig& config) {
         wrenInitConfiguration(&wrenConfig);
             wrenConfig.writeFn = writeFn;
             wrenConfig.errorFn = errorFn;
+            wrenConfig.loadModuleFn = loadModuleFn;
             wrenConfig.bindForeignMethodFn = bindForeignFn;
             wrenConfig.bindForeignClassFn = bindForeignClass;
 
         vm = wrenNewVM(&wrenConfig);
         MAGE_INFO("Frontend: Loaded the Wren VM!");
+        // Now declare the MAGE library 
+        declMageLib();
         // Store the project directory and run type
         uData.runType = config.itype;
         uData.projectDir = config.projectdir;
@@ -104,6 +138,13 @@ std::string Frontend::getSource(const char* module) {
     else {
         return "None";
     }
+}
+
+void Frontend::declMageLib() {
+    mageLib.declModule(MAGE_APP)
+        .declClass("MageApp")
+            .declForeignAlloc(mageCreateMageApp)
+            .declForeignFinalise(mageDestroyMageApp);
 }
 
 void Frontend::loadMainClass() {

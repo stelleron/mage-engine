@@ -15,4 +15,7 @@
     // Wren setters
     #define SET_HANDLE(arg, num) wrenSetSlotHandle(vm, num, arg)
     #define SET_NUM(arg, num) wrenSetSlotDouble(vm, num, (double)arg)
+    // Wren foreign function headers
+    #define VM_FUNC(func) void func(WrenVM* vm)
+    #define DESTRUCT_FUNC(arg) void arg(void* data)
 #endif

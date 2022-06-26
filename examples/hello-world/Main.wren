@@ -1,4 +1,5 @@
-class Main {
+import "mage-app" for MageApp
+class Main is MageApp {
     construct new() {
         System.print("Hello World")
         _x = 0
