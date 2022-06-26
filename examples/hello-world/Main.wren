@@ -1,6 +1,7 @@
-import "mage-app" for MageApp
+import "mage-app" for MageApp, NativeApp
 class Main is MageApp {
     construct new() {
+        super()
         System.print("Hello World")
         _x = 0
     }

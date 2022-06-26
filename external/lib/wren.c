@@ -28,6 +28,9 @@
 #include <stdarg.h>
 #include <stdlib.h>
 #include <stdbool.h>
+#ifdef DEBUG
+  #include <stdio.h>
+#endif
 
 // The Wren semantic version number components.
 #define WREN_VERSION_MAJOR 0
@@ -2652,6 +2655,7 @@ void wrenFreeVM(WrenVM* vm)
   while (obj != NULL)
   {
     Obj* next = obj->next;
+    
     wrenFreeObj(vm, obj);
     obj = next;
   }

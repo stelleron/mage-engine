@@ -12,9 +12,12 @@
     #define GET_BOOL(num) wrenGetSlotBool(vm, num)
     #define GET_SLOT_TYPE(num) wrenGetSlotType(vm, num)
     #define GET_USER_DATA() wrenGetUserData(vm);
+    #define GET_FOREIGN(num) wrenGetSlotForeign(vm, num)
     // Wren setters
     #define SET_HANDLE(arg, num) wrenSetSlotHandle(vm, num, arg)
     #define SET_NUM(arg, num) wrenSetSlotDouble(vm, num, (double)arg)
+    #define SET_FOREIGN(class) wrenSetSlotNewForeign(vm, 0, 0, sizeof(class))
+    #define SET_USER_DATA(arg) wrenSetUserData(vm, arg)
     // Wren foreign function headers
     #define VM_FUNC(func) void func(WrenVM* vm)
     #define DESTRUCT_FUNC(arg) void arg(void* data)

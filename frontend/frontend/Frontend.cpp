@@ -1,9 +1,8 @@
 #include "Frontend.h"
 #include "MageEngine.h"
+using namespace Mage;
 // Wren modules
 #include "modules/MageApp.h"
-
-using namespace Mage;
 
 // Impl. for the frontend config
 FrontendConfig::FrontendConfig() {
@@ -118,6 +117,7 @@ Frontend::Frontend(const FrontendConfig& config) {
         uData.runType = config.itype;
         uData.projectDir = config.projectdir;
         uData.lib = &mageLib;
+        SET_USER_DATA(&uData);
         // Now run the game
         runGame();
     }
@@ -142,9 +142,10 @@ std::string Frontend::getSource(const char* module) {
 
 void Frontend::declMageLib() {
     mageLib.declModule(MAGE_APP)
-        .declClass("MageApp")
+        .declClass("NativeApp")
             .declForeignAlloc(mageCreateMageApp)
             .declForeignFinalise(mageDestroyMageApp);
+    MAGE_INFO("Wren: Declared the MAGE library!");
 }
 
 void Frontend::loadMainClass() {
