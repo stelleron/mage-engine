@@ -11,7 +11,7 @@ project "mage"
     targetdir "build/"
     objdir "build/obj/backend/"
 
-    files {"backend/**.cpp", "backend/utils/**.cpp", "backend/modules/window/**.cpp"}
+    files {"backend/**.cpp", "backend/utils/**.cpp", "backend/modules/window/**.cpp", "external/lib/wren.c"}
     includedirs {"external/include/", "backend/" , "backend/modules/"}
     libdirs {"external/lib/"}
     links {"whereami", "spdlog", "glfw3", "glad", "GLUT.framework", 
@@ -37,7 +37,7 @@ project "exec"
     targetdir "build/"
     objdir "build/obj/frontend/"
 
-    files {"frontend/**.cpp", "frontend/wren/**.cpp", "external/lib/wren.c"}
+    files {"frontend/**.cpp", "frontend/wren/**.cpp"}
     includedirs {"backend/", "external/include/", "backend/modules/"}
     libdirs {"build/"}
     links {"mage"}

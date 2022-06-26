@@ -34,6 +34,26 @@ void errorFn(WrenVM* vm, WrenErrorType errorType, const char* module, const int 
     }
 }
 
+// Used to bind foreign functions
+WrenForeignMethodFn bindForeignFn(WrenVM* vm, const char* module, const char* className,
+                             bool isStatic, const char* signature) 
+{
+    UserData* uData = (UserData*)GET_USER_DATA();
+    MageLibrary* lib = uData->lib;
+    return lib->searchFn(module, className, isStatic, signature);
+}
+
+// Used to bind foreign classes
+WrenForeignClassMethods bindForeignClass(WrenVM* vm, const char* module, const char* className) 
+{
+    UserData* uData = (UserData*)GET_USER_DATA();
+    MageLibrary* lib = uData->lib;
+    WrenForeignClassMethods fClass;
+    lib->searchFClass(module, className, &fClass);
+    return fClass;
+}
+
+
 // Impl. for the frontend
 Frontend::Frontend(const FrontendConfig& config) {
     gameRun = false;
@@ -53,13 +73,17 @@ Frontend::Frontend(const FrontendConfig& config) {
     // If the game is being run, create the Wren VM
     if (gameRun) {
         wrenInitConfiguration(&wrenConfig);
-        wrenConfig.writeFn = writeFn;
-        wrenConfig.errorFn = errorFn;
+            wrenConfig.writeFn = writeFn;
+            wrenConfig.errorFn = errorFn;
+            wrenConfig.bindForeignMethodFn = bindForeignFn;
+            wrenConfig.bindForeignClassFn = bindForeignClass;
+
         vm = wrenNewVM(&wrenConfig);
         MAGE_INFO("Frontend: Loaded the Wren VM!");
         // Store the project directory and run type
         uData.runType = config.itype;
         uData.projectDir = config.projectdir;
+        uData.lib = &mageLib;
         // Now run the game
         runGame();
     }

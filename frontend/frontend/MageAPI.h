@@ -3,7 +3,6 @@
     #include <array>
     #include <utility>
     #include <string>
-    #include <string.h>
     #include "wren.hpp"
     #define MAGE_API_H
     // Used to create a Wren class

@@ -1,4 +1,5 @@
 #include "MageAPI.h"
+#include <string.h>
 #include <iostream>
 
 // Impl. for the Wren foreign library class and sub classes

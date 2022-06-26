@@ -1,8 +1,5 @@
-import "mage-app" for MageApp, MageConfig
-
-class Main is MageApp {
+class Main {
     construct new() {
-        super()
         System.print("Hello World")
         _x = 0
     }

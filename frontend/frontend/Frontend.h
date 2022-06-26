@@ -1,8 +1,10 @@
 #ifndef MAGE_FRONTEND_H
     #define MAGE_FRONTEND_H
     #include "WrenMacros.h"
+    #include "MageAPI.h"
     #include <string>
     #define ENUM_NAME(arg) #arg
+    typedef WrenLibrary MageLibrary;
     // Enums to check the instruction type given to the MAGE application
     enum InstructType {
         CMD_NONE = 0,
@@ -26,6 +28,7 @@
     struct UserData {
         InstructType runType;
         std::string projectDir;
+        MageLibrary* lib;
     };
     // Class to interface with the frontend
     class Frontend { 
@@ -45,6 +48,8 @@
         // User data
         UserData uData;
         MageApplication app;
+        MageLibrary mageLib;
+
         public:
             Frontend(const FrontendConfig& config);
             ~Frontend();
