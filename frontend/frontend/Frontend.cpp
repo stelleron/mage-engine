@@ -1,6 +1,5 @@
 #include "Frontend.h"
 #include "MageEngine.h"
-#include <chrono>
 using namespace Mage;
 
 // Impl. for the frontend config
@@ -98,7 +97,9 @@ void Frontend::loadFunctionHandles() {
     WrenHandle* methodAttribFunc = MAKE_HANDLE("methods");
     GET_VARIABLE("main", "Main", 0);
     CALL_FUNC(attribFunc);
-    CALL_FUNC(methodAttribFunc);
+    if (GET_SLOT_TYPE(0) != WREN_TYPE_NULL) {
+        CALL_FUNC(methodAttribFunc);
+    }
     RELEASE_HANDLE(attribFunc);
     RELEASE_HANDLE(methodAttribFunc);
     // Now time to get the update, render and finish functions
@@ -115,15 +116,16 @@ void Frontend::releaseFunctionHandles() {
 }
 
 void Frontend::runGameLoop() {
-    std::chrono::milliseconds deltatime(1000);
     ENSURE_SLOTS(2);
     while (!gameClose) {
         // Update func
+        ENSURE_SLOTS(2);
         SET_HANDLE(app.mainInstance, 0);
-        SET_NUM(deltatime.count(), 1);
+        SET_NUM(60, 1);
         CALL_FUNC(app.updateFunc);
         gameClose = GET_BOOL(0);
         // Render func
+        ENSURE_SLOTS(1);
         SET_HANDLE(app.mainInstance, 0);
         CALL_FUNC(app.renderFunc);
     }

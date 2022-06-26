@@ -1,20 +1,24 @@
-class Main {
+import "mage-app" for MageApp, MageConfig
+
+class Main is MageApp {
     construct new() {
+        super()
         System.print("Hello World")
+        _x = 0
     }
 
-    #!main_func = "update"
     update(dt) {
-        System.print(dt)
+        while (_x < 2000) {
+            _x = _x + 1
+            return false
+        }
         return true
     }
 
-    #!main_func = "render"
     render() {
 
     }
 
-    #!main_func = "finish"
     finish() {
 
     }
