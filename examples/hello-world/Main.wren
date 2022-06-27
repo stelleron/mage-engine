@@ -1,6 +1,7 @@
-import "mage-app" for MageApp, NativeApp
+import "mage-app" for MageApp, NativeApp, MageConfig
 class Main is MageApp {
     construct new() {
+        var config = MageConfig.new()
         super()
         System.print("Hello World")
         _x = 0

@@ -142,6 +142,8 @@ std::string Frontend::getSource(const char* module) {
 
 void Frontend::declMageLib() {
     mageLib.declModule(MAGE_APP)
+        .declClass("MageConfig")
+            .declForeignAlloc(mageCreateMageConfig)
         .declClass("NativeApp")
             .declForeignAlloc(mageCreateMageApp)
             .declForeignFinalise(mageDestroyMageApp);
