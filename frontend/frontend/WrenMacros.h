@@ -16,7 +16,7 @@
     // Wren setters
     #define SET_HANDLE(arg, num) wrenSetSlotHandle(vm, num, arg)
     #define SET_NUM(arg, num) wrenSetSlotDouble(vm, num, (double)arg)
-    #define SET_FOREIGN(class) wrenSetSlotNewForeign(vm, 0, 0, sizeof(class))
+    #define SET_FOREIGN(class) (class*)wrenSetSlotNewForeign(vm, 0, 0, sizeof(class))
     #define SET_USER_DATA(arg) wrenSetUserData(vm, arg)
     // Wren foreign function headers
     #define VM_FUNC(func) void func(WrenVM* vm)

@@ -15,7 +15,7 @@
         class MageEngine {
             std::string resdir; // Directory to find resources
             public:
-                MageEngine();
+                MageEngine(MageConfig* config);
                 ~MageEngine();
         };
     };

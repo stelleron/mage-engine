@@ -2,7 +2,7 @@ import "mage-app" for MageApp, NativeApp, MageConfig
 class Main is MageApp {
     construct new() {
         var config = MageConfig.new()
-        super()
+        super(config)
         System.print("Hello World")
         _x = 0
     }
