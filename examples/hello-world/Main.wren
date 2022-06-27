@@ -1,4 +1,4 @@
-import "mage-app" for MageApp, NativeApp, MageConfig
+import "mage-app" for MageApp, MageConfig
 class Main is MageApp {
     construct new() {
         var config = MageConfig.new()

@@ -7,8 +7,10 @@
     #include "utils/DebugTools.h"
     #include "utils/Color.h"
     #include "utils/MageConfig.h"
-    // ===== File libraries
+    // ===== File libraries =====
     #include "files/FileSystem.h"
+    // ===== Window libraries =====
+    #include "window/MageWindow.h"
     // ===== Engine class =====
     namespace Mage {
         // Stores the game engine data
