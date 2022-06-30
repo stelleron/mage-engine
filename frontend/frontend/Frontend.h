@@ -15,7 +15,7 @@
         CMD_RUN_DIR, // Run the project at the given directory
         CMD_RUN_CWD, // Run the project in the current directory
         CMD_RUN_DIR_PACKAGE, // Run the .mageproj stored at the given directory 
-        CMD_RUN_CWD_PACKAGE,
+        CMD_RUN_CWD_PACKAGE, // Run the .mageproj
     };
     // Struct for configuring the frontend
     struct FrontendConfig {
