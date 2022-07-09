@@ -21,7 +21,7 @@
 
             // Constructor/destructor
             MageConfig();
-            ~MageConfig();
+            ~MageConfig(){};
         };
     }
 #endif

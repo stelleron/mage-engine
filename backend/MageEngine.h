@@ -15,7 +15,6 @@
     namespace Mage {
         // Stores the game engine data
         class MageEngine {
-            std::string resdir; // Directory to find resources
             public:
                 MageEngine(MageConfig* config);
                 ~MageEngine();

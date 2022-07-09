@@ -21,4 +21,6 @@
     // Wren foreign function headers
     #define VM_FUNC(func) void func(WrenVM* vm)
     #define DESTRUCT_FUNC(arg) void arg(void* data)
+    // Misc.
+    #define CALL_DESTRUCTOR(arg) arg* ptr = (arg*)data; ptr->~arg()
 #endif

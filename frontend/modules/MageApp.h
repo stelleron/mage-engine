@@ -17,17 +17,17 @@
     VM_FUNC(mageCreateMageApp) {
         MageEngine* engine = SET_FOREIGN(MageEngine);
         MageConfig* config = (MageConfig*)GET_FOREIGN(1);
-        *engine = MageEngine(config);
+        new (engine) MageEngine(config);
     }
     DESTRUCT_FUNC(mageDestroyMageApp) {
-
+        CALL_DESTRUCTOR(MageEngine);
     }
     // Impl. for the MageConfig 
     VM_FUNC(mageCreateMageConfig) {
         MageConfig* config = (MageConfig*)SET_FOREIGN(MageConfig);
-        *config = MageConfig();
+        new (config) MageConfig();
     }
     DESTRUCT_FUNC(mageDestroyMageConfig) {
-
+        CALL_DESTRUCTOR(MageConfig);
     }
 #endif
