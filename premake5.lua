@@ -4,46 +4,21 @@ workspace "MageEngine"
     configurations {"Debug", "Release", "Dist"} -- Debug is used during the design of the backend, Release is for writing games in Wren and Dist is for publishing
 
 project "mage"
-    kind "SharedLib"
-    language "C++"
-    cppdialect "C++17"
-
-    targetdir "build/"
-    objdir "build/obj/backend/"
-
-    files {"backend/**.cpp", "backend/utils/**.cpp", "backend/modules/window/**.cpp", "external/lib/wren.c"}
-    includedirs {"external/include/", "backend/" , "backend/modules/"}
-    libdirs {"external/lib/"}
-    links {"whereami", "spdlog", "glfw3", "glad", "GLUT.framework", 
-    "CoreVideo.framework", "IOKit.framework", "OpenGL.framework", "Cocoa.framework"}
-
-    filter "configurations:Debug"
-        defines { "DEBUG" }
-        symbols "On"
-
-    filter "configurations:Release"
-        defines { "DEBUG" }
-        optimize "On"
-
-    filter "configurations:Dist"
-        defines { "NDEBUG" }
-        optimize "On"
-
-project "exec"
     kind "ConsoleApp"
     language "C++"
     cppdialect "C++17"
 
     targetdir "build/"
-    objdir "build/obj/frontend/"
+    objdir "build/obj/"
 
-    files {"frontend/**.cpp", "frontend/wren/**.cpp"}
-    includedirs {"backend/", "external/include/", "backend/modules/", "frontend/"}
-    libdirs {"build/"}
-    links {"mage"}
+    files {"source/**.cpp", "source/utils/**.cpp", "source/frontend/**.cpp", "external/lib/wren.c"}
+    includedirs {"external/include/", "source/"}
+    libdirs {"external/lib/"}
+    links {"whereami", "spdlog", "glfw3", "glad", "datapak", "GLUT.framework", 
+    "CoreVideo.framework", "IOKit.framework", "OpenGL.framework", "Cocoa.framework"}
 
     filter "configurations:Debug"
-        defines { "DEBUG" }
+        defines { "DEBUG", "DEVBUG" }
         symbols "On"
 
     filter "configurations:Release"
@@ -53,4 +28,3 @@ project "exec"
     filter "configurations:Dist"
         defines { "NDEBUG" }
         optimize "On"
-    
