@@ -117,7 +117,6 @@ namespace Mage {
     std::string removePartOfFilePath(const std::string& src, const std::string& remove_str) {
         int rem_len = remove_str.size();
         std::string subPath = src.substr(rem_len);
-        MAGE_WARN("{0}", subPath);
         return subPath;
     }
 

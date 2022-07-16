@@ -1,8 +1,10 @@
 make -f /Users/donti/Desktop/arcanist/Makefile --dry-run --always-make --keep-going --print-directory
 make: Entering directory `/Users/donti/Desktop/stelleron/mage-engine'
-make: Leaving directory `/Users/donti/Desktop/stelleron/mage-engine'
  
 make: /Users/donti/Desktop/arcanist/Makefile: No such file or directory
+
+make: Leaving directory `/Users/donti/Desktop/stelleron/mage-engine'
+ 
 make: *** No rule to make target `/Users/donti/Desktop/arcanist/Makefile'.
 make: Failed to remake makefile `/Users/donti/Desktop/arcanist/Makefile'.
 make: *** No targets specified and no makefile found.  Stop.

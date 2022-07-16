@@ -16,8 +16,7 @@ namespace Mage
             // Now loop through the folder
             for (const auto& entry : std::filesystem::directory_iterator(dirname)) {
                 if (getPathType(entry.path().c_str()) == FILE_PATH) {
-                    std::string newPath = entry.path().string();
-                    removePartOfFilePath(newPath, dirname);
+                    std::string newPath = entry.path().string();;
                     buffer->push_back(entry.path().c_str());
                 }
                 else if (getPathType(entry.path().c_str()) == DIR_PATH) {
@@ -101,6 +100,7 @@ namespace Mage
         else if (arg.argArray[0] == "package") {
             if (arg.argArray.size() == 2) {
                 pathbuf = arg.argArray[1];
+                std::string nPathBuf = pathbuf;
                 std::string pakpath = rewindPath(pathbuf, 1);
                 pakpath += "game.mageproj";
                 // Create the game.mageproj
@@ -115,8 +115,8 @@ namespace Mage
                 std::string fileSrc;
                 int x;
                 for (x = 0; x < filenameBuffer.size(); x++) {
-                    fileSrc = loadFile(filenameBuffer[x]);
-                    dat.write(filenameBuffer[x].c_str(), fileSrc);
+                    fileSrc = loadFile(filenameBuffer[x].c_str());
+                    dat.write((removePartOfFilePath(filenameBuffer[x] ,nPathBuf)).c_str(), fileSrc);
                 }
                 dat.close();
 
