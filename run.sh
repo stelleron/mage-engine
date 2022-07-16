@@ -1,2 +1,1 @@
-./build/mage package /Users/donti/Desktop/stelleron/mage-engine/tests/basic_test/
-/Users/donti/Desktop/stelleron/datapak-cli/build/datapak list /Users/donti/Desktop/stelleron/mage-engine/tests/game.mageproj
+./build/mage run /Users/donti/Desktop/stelleron/mage-engine/tests/test_mageproj/game.mageproj
