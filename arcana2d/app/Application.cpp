@@ -47,7 +47,6 @@ namespace arcana {
             if (window.isActive()) {
                 // Update
                 gameCtx.camera.set(camera);
-                gameCtx.audio.update();
                 internalClock.reset();
                 app.update(gameCtx);
 

@@ -24,7 +24,7 @@ ifeq ($(config),debug)
   TARGET = $(TARGETDIR)/mage
   OBJDIR = build/obj/Debug/mage
   DEFINES += -DDEBUG
-  INCLUDES += -Iexternal/include -Iarcana2d
+  INCLUDES += -Iexternal/include -Iarcana2d -Isrc
   FORCE_INCLUDE +=
   ALL_CPPFLAGS += $(CPPFLAGS) -MMD -MP $(DEFINES) $(INCLUDES)
   ALL_CFLAGS += $(CFLAGS) $(ALL_CPPFLAGS) -m64 -g
@@ -59,7 +59,7 @@ ifeq ($(config),release)
   TARGET = $(TARGETDIR)/mage
   OBJDIR = build/obj/Release/mage
   DEFINES +=
-  INCLUDES += -Iexternal/include -Iarcana2d
+  INCLUDES += -Iexternal/include -Iarcana2d -Isrc
   FORCE_INCLUDE +=
   ALL_CPPFLAGS += $(CPPFLAGS) -MMD -MP $(DEFINES) $(INCLUDES)
   ALL_CFLAGS += $(CFLAGS) $(ALL_CPPFLAGS) -m64
@@ -82,6 +82,7 @@ endif
 
 OBJECTS := \
 	$(OBJDIR)/main.o \
+	$(OBJDIR)/DebugTools.o \
 
 RESOURCES := \
 
@@ -141,6 +142,9 @@ $(OBJECTS): | $(OBJDIR)
 endif
 
 $(OBJDIR)/main.o: src/main.cpp
+	@echo $(notdir $<)
+	$(SILENT) $(CXX) $(ALL_CXXFLAGS) $(FORCE_INCLUDE) -o "$@" -MF "$(@:%.o=%.d)" -c "$<"
+$(OBJDIR)/DebugTools.o: src/utils/DebugTools.cpp
 	@echo $(notdir $<)
 	$(SILENT) $(CXX) $(ALL_CXXFLAGS) $(FORCE_INCLUDE) -o "$@" -MF "$(@:%.o=%.d)" -c "$<"
 

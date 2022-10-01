@@ -30,7 +30,7 @@ ifeq ($(config),debug)
   ALL_CFLAGS += $(CFLAGS) $(ALL_CPPFLAGS) -m64 -fPIC -g
   ALL_CXXFLAGS += $(CXXFLAGS) $(ALL_CPPFLAGS) -m64 -fPIC -g -std=c++17
   ALL_RESFLAGS += $(RESFLAGS) $(DEFINES) $(INCLUDES)
-  LIBS += -framework GLUT -framework CoreVideo -framework IOKit -framework OpenGL -framework Cocoa -lglfw3 -lglad
+  LIBS += -framework GLUT -framework CoreVideo -framework IOKit -framework OpenGL -framework Cocoa -lglfw3 -lglad -lirrklang
   LDDEPS +=
   ALL_LDFLAGS += $(LDFLAGS) -Lexternal/lib -m64 -dynamiclib -Wl,-install_name,@rpath/libarcana2d.dylib
   LINKCMD = $(CXX) -o "$@" $(OBJECTS) $(RESOURCES) $(ALL_LDFLAGS) $(LIBS)
@@ -65,7 +65,7 @@ ifeq ($(config),release)
   ALL_CFLAGS += $(CFLAGS) $(ALL_CPPFLAGS) -m64 -O2 -fPIC
   ALL_CXXFLAGS += $(CXXFLAGS) $(ALL_CPPFLAGS) -m64 -O2 -fPIC -std=c++17
   ALL_RESFLAGS += $(RESFLAGS) $(DEFINES) $(INCLUDES)
-  LIBS += -framework GLUT -framework CoreVideo -framework IOKit -framework OpenGL -framework Cocoa -lglfw3 -lglad
+  LIBS += -framework GLUT -framework CoreVideo -framework IOKit -framework OpenGL -framework Cocoa -lglfw3 -lglad -lirrklang
   LDDEPS +=
   ALL_LDFLAGS += $(LDFLAGS) -Lexternal/lib -m64 -dynamiclib -Wl,-install_name,@rpath/libarcana2d.dylib
   LINKCMD = $(CXX) -o "$@" $(OBJECTS) $(RESOURCES) $(ALL_LDFLAGS) $(LIBS)
