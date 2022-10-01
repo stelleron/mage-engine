@@ -1,4 +1,5 @@
 #include "utils/DebugTools.hpp"
+#include "wren/Frontend.hpp"
 #include "Arcana2D.hpp"
 #include "wren.hpp"
 #include <string>
@@ -15,13 +16,15 @@ void MageErrorCallback(const char* message) {
     MAGE_ERROR(message);
 }
 
+// Frontend 
+Frontend frontend;
+
 // MAGE Engine application
 class MageEngine : public Application{
     void config(AppConfig& config) {
-        
+
     }
     void init(GameContext& ctx) {
-
 
     }
     void update(GameContext& ctx) {
@@ -57,11 +60,12 @@ int main(int argc, char** argv) {
             MAGE_ERROR("Error: main.wren does not exist in the given directory!");
         }
         else {
-            
+            // Start the frontend
+            filepath = argv[1];
+            frontend.start(filepath);
+            // Build the game engine
+            MageEngine engine;
+            build(engine);
         }
     }
-
-    // Build the game engine
-    MageEngine engine;
-    build(engine);
 }

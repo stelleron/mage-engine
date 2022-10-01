@@ -33,7 +33,7 @@ project "mage"
     targetdir "build/"
     objdir "build/obj/"
 
-    files {"src/**.cpp"}
+    files {"src/**.cpp", "external/lib/wren.c"}
     includedirs {"external/include/", "arcana2d/", "src/"}
     libdirs {"build/"}
     links {"arcana2d"}
