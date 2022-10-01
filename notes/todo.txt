@@ -1,4 +1,0 @@
-Day 1
--Move all project files expect for backend/frontend
--Adjust all files accordingly
--Now add argument handling

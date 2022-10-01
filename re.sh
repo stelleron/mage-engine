@@ -1,2 +1,0 @@
-make
-sh run.sh

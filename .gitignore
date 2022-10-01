@@ -1,0 +1,9 @@
+build/
+premake5.lua
+re.sh
+all.sh
+commit.sh
+Makefile
+mage.make
+run.sh
+.vscode/
