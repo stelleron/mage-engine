@@ -12,7 +12,7 @@ class Main {
         cfg.resizable = true
     }
     init(ctx) {
-        System.print(Random.generate(2, 3))
+
     }
     update(ctx) {
 

@@ -1,6 +1,6 @@
 #ifndef ARCANA2D_AUDIO
     #define ARCANA2D_AUDIO
-    #include <irrklang/irrKlang.h>
+    #include "irrKlang/irrKlang.h"
     using namespace irrklang;
 
     namespace arcana {

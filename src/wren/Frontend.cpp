@@ -57,8 +57,30 @@ namespace mage {
     "}\n"
     ;
 
+    const char* mageWindowModule =
+    "import \"mage-utils\" for Vec2\n"
+    "class Window {\n"
+    "   construct new() {}\n"
+    "   foreign wasResized \n"
+    "   foreign wasMoved \n"
+    "   foreign isMinimized \n"
+    "   foreign isMaximized \n"
+    "   foreign pos=(value)\n"
+    "   foreign x\n"
+    "   foreign y\n"
+    "   foreign width\n"
+    "   foreign height\n"
+    "   foreign restore()\n"
+    "   foreign minimize()\n"
+    "   foreign maximize()\n"
+    "   foreign title=(value)\n"
+    "   foreign close()\n"
+    "}\n"
+    ;
+
     const char* mageAppModule = 
     "import \"mage-utils\" for Vec2, Color\n"
+    "import \"mage-window\" for Window\n"
     "class AppConfig {\n"
     "   construct new() {}\n"
     "   foreign width=(value)\n"
@@ -79,7 +101,10 @@ namespace mage {
     "   foreign max_size=(value)\n"
     "}\n"
     "class GameContext {\n"
-    "   construct new() {}\n"
+    "   construct new() {\n"
+    "       _window = Window.new()\n"
+    "   }\n"
+    "   window {_window}"
     "}\n"
     "class RenderContext {\n"
     "   construct new() {}\n"
@@ -354,6 +379,77 @@ namespace mage {
         arcana::random::setSeed(GET_INT(1));
     } 
 
+    //== Window
+    void windowClose(WrenVM* vm) {
+        UserData* uData = (UserData*)GET_USER_DATA();
+        uData->game_ctx->window.close();
+    }
+
+    void windowRestore(WrenVM* vm) {
+        UserData* uData = (UserData*)GET_USER_DATA();
+        uData->game_ctx->window.restoreWindow();
+    }
+
+    void windowMinimize(WrenVM* vm) {
+        UserData* uData = (UserData*)GET_USER_DATA();
+        uData->game_ctx->window.minimizeWindow();
+    }
+
+    void windowMaximize(WrenVM* vm) {
+        UserData* uData = (UserData*)GET_USER_DATA();
+        uData->game_ctx->window.maximizeWindow();
+    }
+
+    void windowIsMaximized(WrenVM* vm) {
+        UserData* uData = (UserData*)GET_USER_DATA();
+        SET_BOOL(uData->game_ctx->window.isMaximized(), 0);
+    }
+
+    void windowIsMinimized(WrenVM* vm) {
+        UserData* uData = (UserData*)GET_USER_DATA();
+        SET_BOOL(uData->game_ctx->window.isMinimized(), 0);
+    }
+
+    void windowWasResized(WrenVM* vm) {
+        UserData* uData = (UserData*)GET_USER_DATA();
+        SET_BOOL(uData->game_ctx->window.wasResized(), 0);
+    }
+
+    void windowWasMoved(WrenVM* vm) {
+        UserData* uData = (UserData*)GET_USER_DATA();
+        SET_BOOL(uData->game_ctx->window.wasMoved(), 0);
+    }
+
+    void windowGetPosX(WrenVM* vm) {
+        UserData* uData = (UserData*)GET_USER_DATA();
+        SET_NUM(uData->game_ctx->window.getPos().x, 0);
+    }
+
+    void windowGetPosY(WrenVM* vm) {
+        UserData* uData = (UserData*)GET_USER_DATA();
+        SET_NUM(uData->game_ctx->window.getPos().y, 0);
+    }
+
+    void windowGetWidth(WrenVM* vm) {
+        UserData* uData = (UserData*)GET_USER_DATA();
+        SET_NUM(uData->game_ctx->window.getWindowSize().x, 0);
+    }
+
+    void windowGetHeight(WrenVM* vm) {
+        UserData* uData = (UserData*)GET_USER_DATA();
+        SET_NUM(uData->game_ctx->window.getWindowSize().y, 0);
+    }
+
+    void windowSetPos(WrenVM* vm) {
+        UserData* uData = (UserData*)GET_USER_DATA();
+        uData->game_ctx->window.setWindowPos(*(arcana::Vector2*)GET_FOREIGN(1));
+    }
+
+    void windowSetTitle(WrenVM* vm) {
+        UserData* uData = (UserData*)GET_USER_DATA();
+        uData->game_ctx->window.updateTitle(GET_STR(1));
+    }
+
     // === END MAGE FUNCTION DEFINITIONS
 
     // Print function for the Wren VM
@@ -392,6 +488,9 @@ namespace mage {
         }
         else if (strcmp(module, "mage-random") == 0) {
             return mageRandomModule;
+        }
+        else if (strcmp(module, "mage-window") == 0) {
+            return mageWindowModule;
         }
         else {
             return "";
@@ -558,6 +657,22 @@ namespace mage {
                 .declForeignFn("generate()", true, randomGenerate)
                 .declForeignFn("generate(_,_)", true, randomGenerateNum)
                 .declForeignFn("seed=(_)", true, randomSetSeed)
+        .declModule("mage-window")
+            .declClass("Window")
+                .declForeignFn("close()", false, windowClose)
+                .declForeignFn("restore()", false, windowRestore)
+                .declForeignFn("minimize()", false, windowMinimize)
+                .declForeignFn("maximize()", false, windowMaximize)
+                .declForeignFn("wasResized", false, windowWasResized)
+                .declForeignFn("wasMoved", false, windowWasMoved)
+                .declForeignFn("isMinimized", false, windowIsMinimized)
+                .declForeignFn("isMaximized", false, windowIsMaximized)
+                .declForeignFn("x", false, windowGetPosX)
+                .declForeignFn("y", false, windowGetPosY)
+                .declForeignFn("width", false, windowGetWidth)
+                .declForeignFn("height", false, windowGetHeight)
+                .declForeignFn("pos=(_)", false, windowSetPos)
+                .declForeignFn("title=(_)", false, windowSetTitle)
         .declModule("mage-app")
             .declClass("AppConfig")
                 .declForeignFn("width=(_)", false, appConfigSetWindowWidth)

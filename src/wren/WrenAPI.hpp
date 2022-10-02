@@ -72,6 +72,7 @@
         #define GET_FOREIGN(num) wrenGetSlotForeign(vm, num)
         #define GET_STR(num) wrenGetSlotString(vm, num)
         // Wren setters
+        #define SET_BOOL(arg, num) wrenSetSlotBool(vm, num, arg)
         #define SET_HANDLE(arg, num) wrenSetSlotHandle(vm, num, arg)
         #define SET_NUM(arg, num) wrenSetSlotDouble(vm, num, (double)arg)
         #define SET_FOREIGN(class) (class*)wrenSetSlotNewForeign(vm, 0, 0, sizeof(class))

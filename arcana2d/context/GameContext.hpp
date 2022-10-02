@@ -24,7 +24,7 @@
                     inline bool wasResized() {return event_data->windowData.wasResized;} // Was the window resized last frame?
                     inline bool wasMoved() {return event_data->windowData.wasMoved;} // Was the window moved last frame?
                     inline bool isMinimized() {return event_data->windowData.isMinimized;} // Is the window minimized?
-                    inline bool isMaxmized() {return event_data->windowData.isMaximized;} // Is the window maximized?
+                    inline bool isMaximized() {return event_data->windowData.isMaximized;} // Is the window maximized?
                     inline Vector2 getPos() {return event_data->windowData.windowPos;} // Gets the window position
 
                     Vector2 getWindowSize();
