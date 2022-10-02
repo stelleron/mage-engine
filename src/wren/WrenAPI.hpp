@@ -66,9 +66,11 @@
         #define GET_VARIABLE(arg1, arg2, num) wrenGetVariable(vm, arg1, arg2, num)   
         #define GET_BOOL(num) wrenGetSlotBool(vm, num)
         #define GET_INT(num) (int)wrenGetSlotDouble(vm, num)
+        #define GET_FLOAT(num) (float)wrenGetSlotDouble(vm, num)
         #define GET_SLOT_TYPE(num) wrenGetSlotType(vm, num)
         #define GET_USER_DATA() wrenGetUserData(vm);
         #define GET_FOREIGN(num) wrenGetSlotForeign(vm, num)
+        #define GET_STR(num) wrenGetSlotString(vm, num)
         // Wren setters
         #define SET_HANDLE(arg, num) wrenSetSlotHandle(vm, num, arg)
         #define SET_NUM(arg, num) wrenSetSlotDouble(vm, num, (double)arg)

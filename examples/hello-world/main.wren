@@ -5,7 +5,7 @@ class Main {
 
     }
     config(cfg) {
-        cfg.width = 500
+        cfg.title = "MAGE Engine - A 2D Game Engine for Making Awesome Games Easy"
     }
     init(ctx) {
 

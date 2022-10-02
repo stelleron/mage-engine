@@ -4,10 +4,52 @@
 
 namespace mage {
     // MAGE Engine modules
+    const char* mageUtilsModule =
+    "foreign class Vec2{\n"
+    "   construct new(x,y){}\n"
+    "   foreign x\n"
+    "   foreign y\n"
+    "   foreign x=(value)\n"
+    "   foreign y=(value)\n"
+    "}\n"
+    "foreign class Vec3{\n"
+    "   construct new(x,y,z){}\n"
+    "   foreign x\n"
+    "   foreign y\n"
+    "   foreign z\n"
+    "   foreign x=(value)\n"
+    "   foreign y=(value)\n"
+    "   foreign z=(value)\n"
+    "}\n"
+    "foreign class Vec4{\n"
+    "   construct new(x,y,z,w){}\n"
+    "   foreign x\n"
+    "   foreign y\n"
+    "   foreign z\n"
+    "   foreign w\n"
+    "   foreign x=(value)\n"
+    "   foreign y=(value)\n"
+    "   foreign z=(value)\n"
+    "   foreign w=(value)\n"
+    "}\n";
+
     const char* mageAppModule = 
+    "import \"mage-utils\" for Vec2\n"
     "class AppConfig {\n"
     "   construct new() {}\n"
     "   foreign width=(value)\n"
+    "   foreign height=(value)\n"
+    "   foreign title=(value)\n"
+    "   foreign resizable=(value)\n"
+    "   foreign fullscreen=(value)\n"
+    "   foreign decorated=(value)\n"
+    "   foreign maximized=(value)\n"
+    "   foreign vsync=(value)\n"
+    "   foreign transparent=(value)\n"
+    "   foreign focused=(value)\n"
+    "   foreign halt_while_hidden=(value)\n"
+    "   foreign fps_cap=(value)\n"
+    "   foreign opacity=(value)\n"
     "}\n"
     "class GameContext {\n"
     "   construct new() {}\n"
@@ -17,11 +59,179 @@ namespace mage {
     "}\n";
     
 
-    // MAGE Engine functions
+    // === MAGE FUNCTION DEFINITIONS
+    // == AppConfig
     void appConfigSetWindowWidth(WrenVM* vm) {
         UserData* uData = (UserData*)GET_USER_DATA();
         uData->config->width = GET_INT(1);
     }
+
+    void appConfigSetWindowHeight(WrenVM* vm) {
+        UserData* uData = (UserData*)GET_USER_DATA();
+        uData->config->height = GET_INT(1);
+    }
+
+    void appConfigSetWindowTitle(WrenVM* vm) {
+        UserData* uData = (UserData*)GET_USER_DATA();
+        uData->config->title = GET_STR(1);
+    }
+
+    void appConfigSetWindowResizable(WrenVM* vm) {
+        UserData* uData = (UserData*)GET_USER_DATA();
+        uData->config->resizable = GET_BOOL(1);
+    }
+
+    void appConfigSetWindowFullscreen(WrenVM* vm) {
+        UserData* uData = (UserData*)GET_USER_DATA();
+        uData->config->fullscreen = GET_BOOL(1);
+    }
+
+    void appConfigSetWindowDecorated(WrenVM* vm) {
+        UserData* uData = (UserData*)GET_USER_DATA();
+        uData->config->decorated = GET_BOOL(1);
+    }
+
+    void appConfigSetWindowMaximized(WrenVM* vm) {
+        UserData* uData = (UserData*)GET_USER_DATA();
+        uData->config->maximized = GET_BOOL(1);
+    }
+
+    void appConfigSetWindowVSync(WrenVM* vm) {
+        UserData* uData = (UserData*)GET_USER_DATA();
+        uData->config->vsync = GET_BOOL(1);
+    }
+
+    void appConfigSetWindowTransparent(WrenVM* vm) {
+        UserData* uData = (UserData*)GET_USER_DATA();
+        uData->config->transparent = GET_BOOL(1);
+    }
+
+    void appConfigSetWindowFocused(WrenVM* vm) {
+        UserData* uData = (UserData*)GET_USER_DATA();
+        uData->config->focused = GET_BOOL(1);
+    }
+
+    void appConfigSetWindowHaltWhileHidden(WrenVM* vm) {
+        UserData* uData = (UserData*)GET_USER_DATA();
+        uData->config->halt_while_hidden = GET_BOOL(1);
+    }
+
+    void appConfigSetWindowFPSCap(WrenVM* vm) {
+        UserData* uData = (UserData*)GET_USER_DATA();
+        uData->config->fps_cap = GET_INT(1);
+    }
+
+    void appConfigSetWindowOpacity(WrenVM* vm) {
+        UserData* uData = (UserData*)GET_USER_DATA();
+        uData->config->resizable = GET_FLOAT(1);
+    }
+    //== Vector2
+    void vec2Constructor(WrenVM* vm) {
+        arcana::Vector2* vec = SET_FOREIGN(arcana::Vector2);
+        new (vec) arcana::Vector2(GET_FLOAT(1), GET_FLOAT(2));
+    }
+
+    void vec2GetX(WrenVM* vm) {
+        arcana::Vector2* vec = (arcana::Vector2*)GET_FOREIGN(0);
+        SET_NUM(0, vec->x);
+    }
+
+    void vec2GetY(WrenVM* vm) {
+        arcana::Vector2* vec = (arcana::Vector2*)GET_FOREIGN(0);
+        SET_NUM(0, vec->y);
+    }
+
+    void vec2SetX(WrenVM* vm) {
+        arcana::Vector2* vec = (arcana::Vector2*)GET_FOREIGN(0);
+        vec->x = GET_FLOAT(1);
+    }
+
+    void vec2SetY(WrenVM* vm) {
+        arcana::Vector2* vec = (arcana::Vector2*)GET_FOREIGN(0);
+        vec->y = GET_FLOAT(1);
+    }
+    //== Vector3
+    void vec3Constructor(WrenVM* vm) {
+        arcana::Vector3* vec = SET_FOREIGN(arcana::Vector3);
+        new (vec) arcana::Vector3(GET_FLOAT(1), GET_FLOAT(2), GET_FLOAT(3));
+    }
+
+    void vec3GetX(WrenVM* vm) {
+        arcana::Vector3* vec = (arcana::Vector3*)GET_FOREIGN(0);
+        SET_NUM(0, vec->x);
+    }
+
+    void vec3GetY(WrenVM* vm) {
+        arcana::Vector3* vec = (arcana::Vector3*)GET_FOREIGN(0);
+        SET_NUM(0, vec->y);
+    }
+
+    void vec3GetZ(WrenVM* vm) {
+        arcana::Vector3* vec = (arcana::Vector3*)GET_FOREIGN(0);
+        SET_NUM(0, vec->z);
+    }
+
+    void vec3SetX(WrenVM* vm) {
+        arcana::Vector3* vec = (arcana::Vector3*)GET_FOREIGN(0);
+        vec->x = GET_FLOAT(1);
+    }
+
+    void vec3SetY(WrenVM* vm) {
+        arcana::Vector3* vec = (arcana::Vector3*)GET_FOREIGN(0);
+        vec->y = GET_FLOAT(1);
+    }
+
+    void vec3SetZ(WrenVM* vm) {
+        arcana::Vector3* vec = (arcana::Vector3*)GET_FOREIGN(0);
+        vec->z = GET_FLOAT(1);
+    }
+    //== Vector4
+    void vec4Constructor(WrenVM* vm) {
+        arcana::Vector4* vec = SET_FOREIGN(arcana::Vector4);
+        new (vec) arcana::Vector4(GET_FLOAT(1), GET_FLOAT(2), GET_FLOAT(3), GET_FLOAT(4));
+    }
+
+    void vec4GetX(WrenVM* vm) {
+        arcana::Vector4* vec = (arcana::Vector4*)GET_FOREIGN(0);
+        SET_NUM(0, vec->x);
+    }
+
+    void vec4GetY(WrenVM* vm) {
+        arcana::Vector4* vec = (arcana::Vector4*)GET_FOREIGN(0);
+        SET_NUM(0, vec->y);
+    }
+
+    void vec4GetZ(WrenVM* vm) {
+        arcana::Vector4* vec = (arcana::Vector4*)GET_FOREIGN(0);
+        SET_NUM(0, vec->z);
+    }
+
+    void vec4GetW(WrenVM* vm) {
+        arcana::Vector4* vec = (arcana::Vector4*)GET_FOREIGN(0);
+        SET_NUM(0, vec->w);
+    }
+
+    void vec4SetX(WrenVM* vm) {
+        arcana::Vector4* vec = (arcana::Vector4*)GET_FOREIGN(0);
+        vec->x = GET_FLOAT(1);
+    }
+
+    void vec4SetY(WrenVM* vm) {
+        arcana::Vector4* vec = (arcana::Vector4*)GET_FOREIGN(0);
+        vec->y = GET_FLOAT(1);
+    }
+
+    void vec4SetZ(WrenVM* vm) {
+        arcana::Vector4* vec = (arcana::Vector4*)GET_FOREIGN(0);
+        vec->z = GET_FLOAT(1);
+    }
+
+    void vec4SetW(WrenVM* vm) {
+        arcana::Vector4* vec = (arcana::Vector4*)GET_FOREIGN(0);
+        vec->w = GET_FLOAT(1);
+    }
+
+    // === END MAGE FUNCTION DEFINITIONS
 
     // Print function for the Wren VM
     void writeFn(WrenVM* vm, const char* str) {
@@ -53,6 +263,9 @@ namespace mage {
     const char* getMageModuleSource(const char* module) {
         if (strcmp(module, "mage-app") == 0) {
             return mageAppModule;
+        }
+        else if (strcmp(module, "mage-utils") == 0) {
+            return mageUtilsModule;
         }
         else {
             return "";
@@ -179,9 +392,46 @@ namespace mage {
 
     void Frontend::declMageLib() {
         mageLib
+        .declModule("mage-utils")
+            .declClass("Vec2")
+                .declForeignAlloc(vec2Constructor)
+                .declForeignFn("x", false, vec2GetX)
+                .declForeignFn("y", false, vec2GetY)
+                .declForeignFn("x=(_)", false, vec2SetX)
+                .declForeignFn("y=(_)", false, vec2SetY)
+            .declClass("Vec3")
+                .declForeignAlloc(vec3Constructor)
+                .declForeignFn("x", false, vec3GetX)
+                .declForeignFn("y", false, vec3GetY)
+                .declForeignFn("z", false, vec3GetZ)
+                .declForeignFn("x=(_)", false, vec3SetX)
+                .declForeignFn("y=(_)", false, vec3SetY)
+                .declForeignFn("z=(_)", false, vec3SetZ)
+            .declClass("Vec4")
+                .declForeignAlloc(vec4Constructor)
+                .declForeignFn("x", false, vec4GetX)
+                .declForeignFn("y", false, vec4GetY)
+                .declForeignFn("z", false, vec4GetZ)
+                .declForeignFn("w", false, vec4GetW)
+                .declForeignFn("x=(_)", false, vec4SetX)
+                .declForeignFn("y=(_)", false, vec4SetY)
+                .declForeignFn("z=(_)", false, vec4SetZ)
+                .declForeignFn("w=(_)", false, vec4SetW)
         .declModule("mage-app")
             .declClass("AppConfig")
-                .declForeignFn("width=(_)", false, appConfigSetWindowWidth);
+                .declForeignFn("width=(_)", false, appConfigSetWindowWidth)
+                .declForeignFn("height=(_)", false, appConfigSetWindowHeight)
+                .declForeignFn("title=(_)", false, appConfigSetWindowTitle)
+                .declForeignFn("resizable=(_)", false, appConfigSetWindowResizable)
+                .declForeignFn("fullscreen=(_)", false, appConfigSetWindowFullscreen)
+                .declForeignFn("decorated=(_)", false, appConfigSetWindowDecorated)
+                .declForeignFn("maximized=(_)", false, appConfigSetWindowMaximized)
+                .declForeignFn("vsync=(_)", false, appConfigSetWindowVSync)
+                .declForeignFn("transparent=(_)", false, appConfigSetWindowTransparent)
+                .declForeignFn("focused=(_)", false, appConfigSetWindowFocused)
+                .declForeignFn("halt_while_hidden=(_)", false, appConfigSetWindowHaltWhileHidden)
+                .declForeignFn("fps_cap=(_)", false, appConfigSetWindowFPSCap)
+                .declForeignFn("opacity=(_)", false, appConfigSetWindowOpacity);
         MAGE_INFO("Wren: Declared the MAGE library!");
     }
 
