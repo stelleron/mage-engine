@@ -1,6 +1,7 @@
 #ifndef MAGE_FRONTEND_HPP
     #define MAGE_FRONTEND_HPP
     #include <string>
+    #include "Arcana2D.hpp"
     #include "wren/WrenAPI.hpp"
 
     namespace mage {
@@ -8,16 +9,26 @@
         struct UserData {
             std::string projectDir;
             WrenLibrary* lib;
+
+            arcana::AppConfig* config;
+            arcana::GameContext* game_ctx;
+            arcana::RenderContext* render_ctx;
         };
 
-        // Class to interface with the frontend
-        class Frontend { 
+        // Struct to interface with the frontend
+        struct Frontend { 
             // Stores the wren handles for the MAGE application
             struct MageApplication {
                 WrenHandle* mainInstance;
+                WrenHandle* configFunc;
+                WrenHandle* initFunc;
                 WrenHandle* updateFunc;
                 WrenHandle* renderFunc;
                 WrenHandle* finishFunc;
+
+                WrenHandle* configInstance;
+                WrenHandle* gameCtxInstance;
+                WrenHandle* renderCtxInstance;
             };
             // Wren data
             WrenVM* vm;
@@ -33,6 +44,7 @@
                 void declMageLib();
                 void releaseFunctionHandles();
                 void start(const std::string& fpath);
+                void loadMain();
         };
     }
 #endif

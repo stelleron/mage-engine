@@ -1,8 +1,11 @@
-import "mage-app" for AppConfig, GameContext, RenderContext
+import "mage-app" for AppConfig
 
 class Main {
-    config(cfg) {
+    construct new() {
 
+    }
+    config(cfg) {
+        cfg.width = 500
     }
     init(ctx) {
 
@@ -17,3 +20,4 @@ class Main {
         
     }
 }
+

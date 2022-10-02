@@ -22,19 +22,37 @@ Frontend frontend;
 // MAGE Engine application
 class MageEngine : public Application{
     void config(AppConfig& config) {
-
+        frontend.uData.config = &config;
+        wrenEnsureSlots(frontend.vm, 2);
+        wrenSetSlotHandle(frontend.vm, 0, frontend.app.mainInstance);
+        wrenSetSlotHandle(frontend.vm, 1, frontend.app.configInstance);
+        wrenCall(frontend.vm, frontend.app.configFunc);
     }
     void init(GameContext& ctx) {
-
+        frontend.uData.game_ctx = &ctx;
+        wrenEnsureSlots(frontend.vm, 2);
+        wrenSetSlotHandle(frontend.vm, 0, frontend.app.mainInstance);
+        wrenSetSlotHandle(frontend.vm, 1, frontend.app.gameCtxInstance);
+        wrenCall(frontend.vm, frontend.app.initFunc);
     }
     void update(GameContext& ctx) {
-
+        frontend.uData.game_ctx = &ctx;
+        wrenEnsureSlots(frontend.vm, 2);
+        wrenSetSlotHandle(frontend.vm, 0, frontend.app.mainInstance);
+        wrenSetSlotHandle(frontend.vm, 1, frontend.app.gameCtxInstance);
+        wrenCall(frontend.vm, frontend.app.updateFunc);
     }
     void render(RenderContext& ctx) {
-
+        frontend.uData.render_ctx = &ctx;
+        wrenEnsureSlots(frontend.vm, 2);
+        wrenSetSlotHandle(frontend.vm, 0, frontend.app.mainInstance);
+        wrenSetSlotHandle(frontend.vm, 1, frontend.app.renderCtxInstance);
+        wrenCall(frontend.vm, frontend.app.renderFunc);
     }
     void finish() {
-    
+        wrenEnsureSlots(frontend.vm, 1);
+        wrenSetSlotHandle(frontend.vm, 0, frontend.app.mainInstance);
+        wrenCall(frontend.vm, frontend.app.finishFunc);
     }
 };
 
