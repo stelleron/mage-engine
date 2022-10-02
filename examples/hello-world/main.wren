@@ -1,5 +1,6 @@
 import "mage-utils" for Vec2, Color
 import "mage-random" for Random
+import "mage-timer" for Timer
 import "mage-app" for AppConfig
 
 class Main {
@@ -12,7 +13,7 @@ class Main {
         cfg.resizable = true
     }
     init(ctx) {
-
+        
     }
     update(ctx) {
 

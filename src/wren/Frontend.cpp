@@ -78,6 +78,15 @@ namespace mage {
     "}\n"
     ;
 
+    const char* mageTimerModule = 
+    "foreign class Timer {\n"
+    "   construct new() {}\n"
+    "   foreign reset()\n"
+    "   foreign elapsed\n"
+    "   foreign elapsedMillis\n"
+    "}\n"
+    ;
+
     const char* mageAppModule = 
     "import \"mage-utils\" for Vec2, Color\n"
     "import \"mage-window\" for Window\n"
@@ -449,6 +458,26 @@ namespace mage {
         UserData* uData = (UserData*)GET_USER_DATA();
         uData->game_ctx->window.updateTitle(GET_STR(1));
     }
+    //== Timer
+    void timerConstructor(WrenVM* vm) {
+        arcana::Timer* timer = SET_FOREIGN(arcana::Timer);
+        new (timer) arcana::Timer();
+    }
+    
+    void timerReset(WrenVM* vm) {
+        arcana::Timer* timer = (arcana::Timer*)GET_FOREIGN(0);
+        timer->reset();
+    }
+
+    void timerGetElapsed(WrenVM* vm) {
+        arcana::Timer* timer = (arcana::Timer*)GET_FOREIGN(0);
+        SET_NUM(timer->getElapsed(), 0);
+    }
+
+    void timerGetElapsedMillis(WrenVM* vm) {
+        arcana::Timer* timer = (arcana::Timer*)GET_FOREIGN(0);
+        SET_NUM(timer->getElapsedMillis(), 0);
+    }
 
     // === END MAGE FUNCTION DEFINITIONS
 
@@ -491,6 +520,9 @@ namespace mage {
         }
         else if (strcmp(module, "mage-window") == 0) {
             return mageWindowModule;
+        }
+        else if (strcmp(module, "mage-timer") == 0) {
+            return mageTimerModule;
         }
         else {
             return "";
@@ -673,6 +705,12 @@ namespace mage {
                 .declForeignFn("height", false, windowGetHeight)
                 .declForeignFn("pos=(_)", false, windowSetPos)
                 .declForeignFn("title=(_)", false, windowSetTitle)
+        .declModule("mage-timer")
+            .declClass("Timer")
+                .declForeignAlloc(timerConstructor)
+                .declForeignFn("reset()", false, timerReset)
+                .declForeignFn("elapsed", false, timerGetElapsed)
+                .declForeignFn("elapsedMillis", false, timerGetElapsedMillis)
         .declModule("mage-app")
             .declClass("AppConfig")
                 .declForeignFn("width=(_)", false, appConfigSetWindowWidth)
