@@ -31,15 +31,32 @@ namespace mage {
     "   foreign y=(value)\n"
     "   foreign z=(value)\n"
     "   foreign w=(value)\n"
+    "}\n"
+    "foreign class Color{\n"
+    "   construct new(r,g,b,a){}\n"
+    "   static rgb(r,g,b){ Color.new(r,g,b,255) }\n"
+    "   static rgba(r,g,b,a){ Color.new(r,g,b,a) }\n"
+    "   static normal_rgb(r,g,b){ Color.new(r/255, g/255, b/255, 1.0) }\n"
+    "   static normal_rgba(r,g,b,a){ Color.new(r/255, g/255, b/255, a/255) }\n"
+    "   \n"
+    "   foreign r\n"
+    "   foreign g\n"
+    "   foreign b\n"
+    "   foreign a\n"
+    "   foreign r=(value)\n"
+    "   foreign g=(value)\n"
+    "   foreign b=(value)\n"
+    "   foreign a=(value)\n"
     "}\n";
 
     const char* mageAppModule = 
-    "import \"mage-utils\" for Vec2\n"
+    "import \"mage-utils\" for Vec2, Color\n"
     "class AppConfig {\n"
     "   construct new() {}\n"
     "   foreign width=(value)\n"
     "   foreign height=(value)\n"
     "   foreign title=(value)\n"
+    "   foreign background_color=(value)\n"
     "   foreign resizable=(value)\n"
     "   foreign fullscreen=(value)\n"
     "   foreign decorated=(value)\n"
@@ -50,13 +67,16 @@ namespace mage {
     "   foreign halt_while_hidden=(value)\n"
     "   foreign fps_cap=(value)\n"
     "   foreign opacity=(value)\n"
+    "   foreign min_size=(value)\n"
+    "   foreign max_size=(value)\n"
     "}\n"
     "class GameContext {\n"
     "   construct new() {}\n"
     "}\n"
     "class RenderContext {\n"
     "   construct new() {}\n"
-    "}\n";
+    "}\n"
+    ;
     
 
     // === MAGE FUNCTION DEFINITIONS
@@ -124,6 +144,21 @@ namespace mage {
     void appConfigSetWindowOpacity(WrenVM* vm) {
         UserData* uData = (UserData*)GET_USER_DATA();
         uData->config->resizable = GET_FLOAT(1);
+    }
+
+    void appConfigSetWindowMinSize(WrenVM* vm) {
+        UserData* uData = (UserData*)GET_USER_DATA();
+        uData->config->min_size = *(arcana::Vector2*)GET_FOREIGN(1);
+    }
+
+    void appConfigSetWindowMaxSize(WrenVM* vm) {
+        UserData* uData = (UserData*)GET_USER_DATA();
+        uData->config->max_size = *(arcana::Vector2*)GET_FOREIGN(1);
+    }
+
+    void appConfigSetWindowBackgroundColor(WrenVM* vm) {
+        UserData* uData = (UserData*)GET_USER_DATA();
+        uData->config->background_color = *(arcana::Color*)GET_FOREIGN(1);
     }
     //== Vector2
     void vec2Constructor(WrenVM* vm) {
@@ -229,6 +264,75 @@ namespace mage {
     void vec4SetW(WrenVM* vm) {
         arcana::Vector4* vec = (arcana::Vector4*)GET_FOREIGN(0);
         vec->w = GET_FLOAT(1);
+    }
+    //== Color
+    void colorConstructor(WrenVM* vm) {
+        arcana::Color* color = SET_FOREIGN(arcana::Color);
+        new (color) arcana::Color(GET_INT(1), GET_INT(2), GET_INT(3), GET_INT(4));
+    }
+
+    void colorGetR(WrenVM* vm) {
+        arcana::Color* color = (arcana::Color*)GET_FOREIGN(0);
+        SET_NUM(0, color->r);
+    }
+
+    void colorGetG(WrenVM* vm) {
+        arcana::Color* color = (arcana::Color*)GET_FOREIGN(0);
+        SET_NUM(0, color->g);
+    }
+
+    void colorGetB(WrenVM* vm) {
+        arcana::Color* color = (arcana::Color*)GET_FOREIGN(0);
+        SET_NUM(0, color->b);
+    }
+
+    void colorGetA(WrenVM* vm) {
+        arcana::Color* color = (arcana::Color*)GET_FOREIGN(0);
+        SET_NUM(0, color->a);
+    }
+
+    void colorSetR(WrenVM* vm) {
+        arcana::Color* color = (arcana::Color*)GET_FOREIGN(0);
+        int num = GET_INT(1);
+        if (num > 255 && num < 0) {
+            ERROR("Error: Color value set is not within bounds!")
+        }
+        else {
+            color->r = GET_INT(1);
+        }
+    }
+
+    void colorSetG(WrenVM* vm) {
+        arcana::Color* color = (arcana::Color*)GET_FOREIGN(0);
+        int num = GET_INT(1);
+        if (num > 255 && num < 0) {
+            ERROR("Error: Color value set is not within bounds!")
+        }
+        else {
+            color->g = GET_INT(1);
+        }
+    }
+
+    void colorSetB(WrenVM* vm) {
+        arcana::Color* color = (arcana::Color*)GET_FOREIGN(0);
+        int num = GET_INT(1);
+        if (num > 255 && num < 0) {
+            ERROR("Error: Color value set is not within bounds!")
+        }
+        else {
+            color->b = GET_INT(1);
+        }
+    }
+
+    void colorSetA(WrenVM* vm) {
+        arcana::Color* color = (arcana::Color*)GET_FOREIGN(0);
+        int num = GET_INT(1);
+        if (num > 255 && num < 0) {
+            ERROR("Error: Color value set is not within bounds!")
+        }
+        else {
+            color->a = GET_INT(1);
+        }
     }
 
     // === END MAGE FUNCTION DEFINITIONS
@@ -417,11 +521,22 @@ namespace mage {
                 .declForeignFn("y=(_)", false, vec4SetY)
                 .declForeignFn("z=(_)", false, vec4SetZ)
                 .declForeignFn("w=(_)", false, vec4SetW)
+            .declClass("Color")
+                .declForeignAlloc(colorConstructor)
+                .declForeignFn("r", false, colorGetR)
+                .declForeignFn("g", false, colorGetG)
+                .declForeignFn("b", false, colorGetB)
+                .declForeignFn("a", false, colorGetA)
+                .declForeignFn("r=(_)", false, colorSetR)
+                .declForeignFn("g=(_)", false, colorSetG)
+                .declForeignFn("b=(_)", false, colorSetB)
+                .declForeignFn("a=(_)", false, colorSetA)
         .declModule("mage-app")
             .declClass("AppConfig")
                 .declForeignFn("width=(_)", false, appConfigSetWindowWidth)
                 .declForeignFn("height=(_)", false, appConfigSetWindowHeight)
                 .declForeignFn("title=(_)", false, appConfigSetWindowTitle)
+                .declForeignFn("background_color=(_)", false, appConfigSetWindowBackgroundColor)
                 .declForeignFn("resizable=(_)", false, appConfigSetWindowResizable)
                 .declForeignFn("fullscreen=(_)", false, appConfigSetWindowFullscreen)
                 .declForeignFn("decorated=(_)", false, appConfigSetWindowDecorated)
@@ -431,7 +546,10 @@ namespace mage {
                 .declForeignFn("focused=(_)", false, appConfigSetWindowFocused)
                 .declForeignFn("halt_while_hidden=(_)", false, appConfigSetWindowHaltWhileHidden)
                 .declForeignFn("fps_cap=(_)", false, appConfigSetWindowFPSCap)
-                .declForeignFn("opacity=(_)", false, appConfigSetWindowOpacity);
+                .declForeignFn("opacity=(_)", false, appConfigSetWindowOpacity)
+                .declForeignFn("min_size=(_)", false, appConfigSetWindowMinSize)
+                .declForeignFn("max_size=(_)", false, appConfigSetWindowMaxSize)
+        ;
         MAGE_INFO("Wren: Declared the MAGE library!");
     }
 
