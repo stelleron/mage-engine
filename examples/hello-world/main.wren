@@ -1,4 +1,5 @@
 import "mage-utils" for Vec2, Color
+import "mage-random" for Random
 import "mage-app" for AppConfig
 
 class Main {
@@ -11,7 +12,7 @@ class Main {
         cfg.resizable = true
     }
     init(ctx) {
-
+        System.print(Random.generate(2, 3))
     }
     update(ctx) {
 

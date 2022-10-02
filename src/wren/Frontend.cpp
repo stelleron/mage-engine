@@ -49,6 +49,14 @@ namespace mage {
     "   foreign a=(value)\n"
     "}\n";
 
+    const char* mageRandomModule = 
+    "class Random {\n"
+    "   foreign static generate()\n"
+    "   foreign static generate(min, max)\n"
+    "   foreign static seed=(value)\n"
+    "}\n"
+    ;
+
     const char* mageAppModule = 
     "import \"mage-utils\" for Vec2, Color\n"
     "class AppConfig {\n"
@@ -168,12 +176,12 @@ namespace mage {
 
     void vec2GetX(WrenVM* vm) {
         arcana::Vector2* vec = (arcana::Vector2*)GET_FOREIGN(0);
-        SET_NUM(0, vec->x);
+        SET_NUM(vec->x, 0);
     }
 
     void vec2GetY(WrenVM* vm) {
         arcana::Vector2* vec = (arcana::Vector2*)GET_FOREIGN(0);
-        SET_NUM(0, vec->y);
+        SET_NUM(vec->y, 0);
     }
 
     void vec2SetX(WrenVM* vm) {
@@ -193,17 +201,17 @@ namespace mage {
 
     void vec3GetX(WrenVM* vm) {
         arcana::Vector3* vec = (arcana::Vector3*)GET_FOREIGN(0);
-        SET_NUM(0, vec->x);
+        SET_NUM(vec->x, 0);
     }
 
     void vec3GetY(WrenVM* vm) {
         arcana::Vector3* vec = (arcana::Vector3*)GET_FOREIGN(0);
-        SET_NUM(0, vec->y);
+        SET_NUM(vec->y, 0);
     }
 
     void vec3GetZ(WrenVM* vm) {
         arcana::Vector3* vec = (arcana::Vector3*)GET_FOREIGN(0);
-        SET_NUM(0, vec->z);
+        SET_NUM(vec->z, 0);
     }
 
     void vec3SetX(WrenVM* vm) {
@@ -228,22 +236,22 @@ namespace mage {
 
     void vec4GetX(WrenVM* vm) {
         arcana::Vector4* vec = (arcana::Vector4*)GET_FOREIGN(0);
-        SET_NUM(0, vec->x);
+        SET_NUM(vec->x, 0);
     }
 
     void vec4GetY(WrenVM* vm) {
         arcana::Vector4* vec = (arcana::Vector4*)GET_FOREIGN(0);
-        SET_NUM(0, vec->y);
+        SET_NUM(vec->y, 0);
     }
 
     void vec4GetZ(WrenVM* vm) {
         arcana::Vector4* vec = (arcana::Vector4*)GET_FOREIGN(0);
-        SET_NUM(0, vec->z);
+        SET_NUM(vec->z, 0);
     }
 
     void vec4GetW(WrenVM* vm) {
         arcana::Vector4* vec = (arcana::Vector4*)GET_FOREIGN(0);
-        SET_NUM(0, vec->w);
+        SET_NUM(vec->w, 0);
     }
 
     void vec4SetX(WrenVM* vm) {
@@ -273,22 +281,22 @@ namespace mage {
 
     void colorGetR(WrenVM* vm) {
         arcana::Color* color = (arcana::Color*)GET_FOREIGN(0);
-        SET_NUM(0, color->r);
+        SET_NUM(color->r, 0);
     }
 
     void colorGetG(WrenVM* vm) {
         arcana::Color* color = (arcana::Color*)GET_FOREIGN(0);
-        SET_NUM(0, color->g);
+        SET_NUM(color->g, 0);
     }
 
     void colorGetB(WrenVM* vm) {
         arcana::Color* color = (arcana::Color*)GET_FOREIGN(0);
-        SET_NUM(0, color->b);
+        SET_NUM(color->b, 0);
     }
 
     void colorGetA(WrenVM* vm) {
         arcana::Color* color = (arcana::Color*)GET_FOREIGN(0);
-        SET_NUM(0, color->a);
+        SET_NUM(color->a, 0);
     }
 
     void colorSetR(WrenVM* vm) {
@@ -335,6 +343,17 @@ namespace mage {
         }
     }
 
+    //== Random
+    void randomGenerate(WrenVM* vm) {
+        SET_NUM(arcana::random::generate(),0);
+    } 
+    void randomGenerateNum(WrenVM* vm) {
+        SET_NUM(arcana::random::generateNum(GET_INT(1), GET_INT(2)),0);
+    }
+    void randomSetSeed(WrenVM* vm) {
+        arcana::random::setSeed(GET_INT(1));
+    } 
+
     // === END MAGE FUNCTION DEFINITIONS
 
     // Print function for the Wren VM
@@ -370,6 +389,9 @@ namespace mage {
         }
         else if (strcmp(module, "mage-utils") == 0) {
             return mageUtilsModule;
+        }
+        else if (strcmp(module, "mage-random") == 0) {
+            return mageRandomModule;
         }
         else {
             return "";
@@ -531,6 +553,11 @@ namespace mage {
                 .declForeignFn("g=(_)", false, colorSetG)
                 .declForeignFn("b=(_)", false, colorSetB)
                 .declForeignFn("a=(_)", false, colorSetA)
+        .declModule("mage-random")
+            .declClass("Random")
+                .declForeignFn("generate()", true, randomGenerate)
+                .declForeignFn("generate(_,_)", true, randomGenerateNum)
+                .declForeignFn("seed=(_)", true, randomSetSeed)
         .declModule("mage-app")
             .declClass("AppConfig")
                 .declForeignFn("width=(_)", false, appConfigSetWindowWidth)
