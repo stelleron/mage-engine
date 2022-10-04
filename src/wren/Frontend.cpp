@@ -104,12 +104,12 @@ namespace mage {
     "}\n"
     "foreign class Line {\n"
     "   construct new(start, end) {}\n"
-    "   foreign start_x\n"
-    "   foreign start_y\n"
-    "   foreign end_x\n"
-    "   foreign end_y\n"
-    "   startPos {Vec2.new(this.start_x, this.start_y)}\n"
-    "   endPos {Vec2.new(this.end_x, this.end_y)}\n"
+    "   foreign startX\n"
+    "   foreign startY\n"
+    "   foreign endX\n"
+    "   foreign endY\n"
+    "   startPos {Vec2.new(this.startX, this.startY)}\n"
+    "   endPos {Vec2.new(this.endX, this.endY)}\n"
     "   foreign startPos=(value)\n"
     "   foreign endPos=(value)\n"
     "}\n"
@@ -294,12 +294,21 @@ namespace mage {
     ""
     ;
 
+    const char* mageAudioModule = 
+    "class AudioContext {\n"
+    "   construct new() {}\n"
+    "   foreign play(path, isLooping)\n"
+    "   play(path) { play(path, true) }\n" 
+    "}\n"
+    ;
+
     const char* mageAppModule = 
     "import \"mage-utils\" for Vec2, Color\n"
     "import \"mage-window\" for Window\n"
     "import \"mage-timer\" for InternalClock\n"
     "import \"mage-camera\" for Camera\n"
     "import \"mage-input\" for Mouse, Keyboard\n"
+    "import \"mage-audio\" for AudioContext\n"
     "class AppConfig {\n"
     "   construct new() {}\n"
     "   foreign width=(value)\n"
@@ -326,12 +335,14 @@ namespace mage {
     "       _camera = Camera.new()\n"
     "       _mouse = Mouse.new()\n"
     "       _keyboard = Keyboard.new()\n"
+    "       _audio = AudioContext.new()\n"
     "   }\n"
     "   window {_window}\n"
     "   timer {_timer}\n"
     "   camera {_camera}\n"
     "   mouse {_mouse}\n"
     "   keyboard {_keyboard}\n"
+    "   audio {_audio}\n"
     "}\n"
     "class RenderContext {\n"
     "   construct new() {}\n"
@@ -860,6 +871,12 @@ namespace mage {
         }
     }
 
+    //== Audio 
+    void audioContextPlay(WrenVM* vm) {
+        UserData* uData = (UserData*)GET_USER_DATA();
+        uData->game_ctx->audio.play(GET_STR(1), GET_BOOL(2));
+    }
+
     //== Point
     void pointConstructor(WrenVM* vm) {
         arcana::Point* point = SET_FOREIGN(arcana::Point);
@@ -879,6 +896,44 @@ namespace mage {
     void pointSetPos(WrenVM* vm) {
         arcana::Point* point = ((arcana::Point*)GET_FOREIGN(0));
         point->pos = *((arcana::Vector2*)GET_FOREIGN(1));
+    }
+
+    //== Line
+    void lineConstructor(WrenVM* vm) {
+        arcana::Line* line = SET_FOREIGN(arcana::Line);
+        arcana::Vector2* startPoint = (arcana::Vector2*)GET_FOREIGN(1);
+        arcana::Vector2* endPoint = (arcana::Vector2*)GET_FOREIGN(2);
+        new (line) arcana::Line(*startPoint, *endPoint);
+    }
+
+    void lineGetStartX(WrenVM* vm) {
+        arcana::Line* line = (arcana::Line*)GET_FOREIGN(1);
+        SET_NUM(line->startPoint.x, 0);
+    }
+
+    void lineGetStartY(WrenVM* vm) {
+        arcana::Line* line = (arcana::Line*)GET_FOREIGN(1);
+        SET_NUM(line->startPoint.y, 0);
+    }
+
+    void lineGetEndX(WrenVM* vm) {
+        arcana::Line* line = (arcana::Line*)GET_FOREIGN(1);
+        SET_NUM(line->endPoint.x, 0);
+    }
+
+    void lineGetEndY(WrenVM* vm) {
+        arcana::Line* line = (arcana::Line*)GET_FOREIGN(1);
+        SET_NUM(line->endPoint.y, 0);
+    }
+
+    void lineSetStartPos(WrenVM* vm) {
+        arcana::Line* line = ((arcana::Line*)GET_FOREIGN(0));
+        line->startPoint = *((arcana::Vector2*)GET_FOREIGN(1));
+    }
+
+    void lineSetEndPos(WrenVM* vm) {
+        arcana::Line* line = ((arcana::Line*)GET_FOREIGN(0));
+        line->endPoint = *((arcana::Vector2*)GET_FOREIGN(1));
     }
 
     // === END MAGE FUNCTION DEFINITIONS
@@ -940,6 +995,9 @@ namespace mage {
         }
         else if (strcmp(module, "mage-gfx") == 0) {
             return mageGraphicsModule;
+        }
+        else if (strcmp(module, "mage-audio") == 0) {
+            return mageAudioModule;
         }
         else {
             return "";
@@ -1174,6 +1232,13 @@ namespace mage {
                 .declForeignFn("y", false, pointGetPosY)
                 .declForeignFn("pos=(_)", false, pointSetPos)
             .declClass("Line") // TODO
+                .declForeignAlloc(lineConstructor)
+                .declForeignFn("startX", false, lineGetStartX)
+                .declForeignFn("startY", false, lineGetStartY)
+                .declForeignFn("endX", false, lineGetEndX)
+                .declForeignFn("endY", false, lineGetEndY)
+                .declForeignFn("startPos=(_)", false, lineSetStartPos)
+                .declForeignFn("endPos=(_)", false, lineSetEndPos)
             .declClass("Triangle") // TODO
             .declClass("Quadrilateral") // TODO
             .declClass("Rectangle") // TODO
@@ -1182,6 +1247,9 @@ namespace mage {
             .declClass("Shader") // TODO
             .declClass("Texture") // TODO
             .declClass("Sprite") // TODO
+        .declModule("mage-audio")
+            .declClass("AudioContext")
+                .declForeignFn("play(_,_)", false, audioContextPlay)
         .declModule("mage-app")
             .declClass("AppConfig")
                 .declForeignFn("width=(_)", false, appConfigSetWindowWidth)
