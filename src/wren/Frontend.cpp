@@ -440,6 +440,7 @@ namespace mage {
     "   foreign drawCircle(circle, color, z)\n"
     "   foreign drawTex(tex, pos, scale, z, rotation, color)\n"
     "   foreign drawPartTex(tex, rect, pos, scale, z, rotation, color)\n"
+    "   foreign printText(font, text, pos, z, color, padding)\n"
     "}\n"
     ;
     
@@ -1443,6 +1444,18 @@ namespace mage {
         );
     }
 
+    VM_FUNC(renderContextPrintText) {
+        UserData* uData = (UserData*)GET_USER_DATA();
+        uData->render_ctx->print(
+            *(arcana::Font*)GET_FOREIGN(1),
+            GET_STR(2),
+            *(arcana::Vector2*)GET_FOREIGN(3),
+            GET_FLOAT(4),
+            *(arcana::Color*)GET_FOREIGN(5),
+            GET_INT(6)
+        );
+    }
+
     // === END MAGE FUNCTION DEFINITIONS
 
     // Print function for the Wren VM
@@ -1841,6 +1854,7 @@ namespace mage {
                 .declForeignFn("drawCircle(_,_,_)", false, renderContextDrawCircle)
                 .declForeignFn("drawTex(_,_,_,_,_,_)", false, renderContextDrawTex)
                 .declForeignFn("drawPartTex(_,_,_,_,_,_,_)", false, renderContextDrawPartTex)
+                .declForeignFn("printText(_,_,_,_,_,_)", false, renderContextPrintText)
         ;
         MAGE_INFO("Wren: Declared the MAGE library!");
     }
