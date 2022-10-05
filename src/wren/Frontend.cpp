@@ -138,6 +138,21 @@ namespace mage {
     "   foreign static load(path)\n"
     "   foreign static save(path, str)\n"
     "}\n"
+    "foreign class Image {\n"
+    "   construct load(path) {}\n"
+    "   foreign width\n"
+    "   foreign height\n"
+    "   static RGB{1}\n"
+    "   static RGBA{2}\n"
+    "   static GrayScale{3}\n"
+    "   static GrayAlpha{4}\n"
+    "   foreign format\n"
+    "   foreign [index]\n"
+    "   foreign [index]=(value)\n"
+    "}\n"
+    "foreign class Font {\n"
+    "   construct load(path, size)\n"
+    "}\n"
     ;
 
     const char* mageInputModule = 
@@ -291,7 +306,15 @@ namespace mage {
     ;
 
     const char* mageGraphicsModule = 
-    ""
+    "import \"mage-res\" for Image\n"
+    "foreign class Texture {\n"
+    "   construct loadFromImage(image) {}\n"
+    "   static load(path) {\n"
+    "       return Texture.loadFromImage(Image.new)\n"
+    "   }\n"
+    "   foreign width\n"
+    "   foreign height\n"
+    "}\n"
     ;
 
     const char* mageAudioModule = 
@@ -877,6 +900,115 @@ namespace mage {
         uData->game_ctx->audio.play(GET_STR(1), GET_BOOL(2));
     }
 
+    //== Image
+    void imageConstructor(WrenVM* vm) {
+        arcana::Image* image = SET_FOREIGN(arcana::Image);
+        new (image) arcana::Image(GET_STR(1));
+    }
+
+    void imageGetWidth(WrenVM* vm) {
+        arcana::Image* image = (arcana::Image*)GET_FOREIGN(0);
+        SET_NUM(image->width, 0);
+    }
+
+    void imageGetFormat(WrenVM* vm) {
+        arcana::Image* image = (arcana::Image*)GET_FOREIGN(0);
+        SET_NUM(image->format, 0);
+    } 
+
+    void imageGetPixelData(WrenVM* vm) {
+        arcana::Image* image = (arcana::Image*)GET_FOREIGN(0);
+        int index = GET_INT(1);
+        // Convert format to int
+        int pxSize;
+        switch (image->format) {
+            case arcana::GRAYSCALE: pxSize = 1;
+            case arcana::GRAY_ALPHA: pxSize = 2;
+            case arcana::RGB: pxSize = 3;
+            case arcana::RGBA: pxSize = 4;
+            default: pxSize = 1;
+        }
+        if (index >= image->width * image->height * pxSize || index < 0) {
+            ERROR("Error: Image index out of range!")
+            SET_NUM(0, 0);
+        }
+        else {
+            SET_NUM(image->data[index], 0);
+        }
+        SET_NUM(image->format, 0);
+    } 
+
+    void imageSetPixelData(WrenVM* vm) {
+        arcana::Image* image = (arcana::Image*)GET_FOREIGN(0);
+        int index = GET_INT(1);
+        int value = GET_INT(2);
+        // Convert format to int
+        int pxSize;
+        switch (image->format) {
+            case arcana::GRAYSCALE: pxSize = 1;
+            case arcana::GRAY_ALPHA: pxSize = 2;
+            case arcana::RGB: pxSize = 3;
+            case arcana::RGBA: pxSize = 4;
+            default: pxSize = 1;
+        }
+        if (index >= image->width * image->height * pxSize || index < 0) {
+            ERROR("Error: Image index out of range!")
+            SET_NUM(0, 0);
+        }
+        else {
+            if (value < 0 || value > 255) {
+                ERROR("Error: Image pixel not set to a valid color value!")
+            }
+            else {
+                image->data[index] = value;
+            }
+        }
+        SET_NUM(image->format, 0);
+    } 
+    
+
+    void imageGetHeight(WrenVM* vm) {
+        arcana::Image* image = (arcana::Image*)GET_FOREIGN(0);
+        SET_NUM(image->height, 0);
+    }
+
+    void imageDestructor(void* data) {
+        ((arcana::Image*)data)->~Image();
+    }
+
+    //== Texture 
+    void texConstructor(WrenVM* vm) {
+        arcana::Texture* tex = SET_FOREIGN(arcana::Texture);
+        new (tex) arcana::Texture(*((arcana::Image*)GET_FOREIGN(1)));
+    }
+
+    void texGetWidth(WrenVM* vm) {
+        arcana::Texture* tex = (arcana::Texture*)GET_FOREIGN(0);
+        SET_NUM(tex->width, 0);
+    }
+
+    void texGetHeight(WrenVM* vm) {
+        arcana::Texture* tex = (arcana::Texture*)GET_FOREIGN(0);
+        SET_NUM(tex->height, 0);
+    }
+
+    void texDestructor(void* data) {
+        ((arcana::Texture*)data)->~Texture();
+    }
+
+    //== Shader 
+
+
+    //== Font
+    void fontConstructor(WrenVM* vm) {
+        arcana::Font* font = SET_FOREIGN(arcana::Font);
+        new (font) arcana::Font(GET_STR(1), GET_INT(2));
+    }
+
+    void fontDestructor(void* data) {
+        ((arcana::Font*)data)->~Font();
+    }
+
     //== Point
     void pointConstructor(WrenVM* vm) {
         arcana::Point* point = SET_FOREIGN(arcana::Point);
@@ -1171,8 +1303,17 @@ namespace mage {
                 .declForeignFn("fileExists(_)", true, filesystemCheckFileExists)
                 .declForeignFn("load(_)", true, filesystemLoadFile)
                 .declForeignFn("save(_,_)", true, filesystemSaveFile)
-            .declClass("Image") // TODO
-            .declClass("Font")  // TODO
+            .declClass("Image")
+                .declForeignAlloc(imageConstructor)
+                .declForeignFn("width", false, imageGetWidth)
+                .declForeignFn("height", false, imageGetHeight)
+                .declForeignFn("format", false, imageGetFormat)
+                .declForeignFn("[_]", false, imageGetPixelData)
+                .declForeignFn("[_]=(_)", false, imageSetPixelData)
+                .declForeignFinalise(imageDestructor)
+            .declClass("Font")
+                .declForeignAlloc(fontConstructor)
+                .declForeignFinalise(fontDestructor)
         .declModule("mage-window")
             .declClass("Window")
                 .declForeignFn("close()", false, windowClose)
@@ -1231,7 +1372,7 @@ namespace mage {
                 .declForeignFn("x", false, pointGetPosX)
                 .declForeignFn("y", false, pointGetPosY)
                 .declForeignFn("pos=(_)", false, pointSetPos)
-            .declClass("Line") // TODO
+            .declClass("Line")
                 .declForeignAlloc(lineConstructor)
                 .declForeignFn("startX", false, lineGetStartX)
                 .declForeignFn("startY", false, lineGetStartY)
@@ -1245,8 +1386,11 @@ namespace mage {
             .declClass("Circle") // TODO
         .declModule("mage-gfx")
             .declClass("Shader") // TODO
-            .declClass("Texture") // TODO
-            .declClass("Sprite") // TODO
+            .declClass("Texture")
+                .declForeignAlloc(texConstructor)
+                .declForeignFn("width", false, texGetWidth)
+                .declForeignFn("height", false, texGetHeight)
+                .declForeignFinalise(texDestructor)
         .declModule("mage-audio")
             .declClass("AudioContext")
                 .declForeignFn("play(_,_)", false, audioContextPlay)
