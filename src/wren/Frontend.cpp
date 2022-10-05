@@ -113,6 +113,60 @@ namespace mage {
     "   foreign startPos=(value)\n"
     "   foreign endPos=(value)\n"
     "}\n"
+    "foreign class Triangle {\n"
+    "   construct new(point1, point2, point3) {}\n"
+    "   foreign x1\n"
+    "   foreign y1\n"
+    "   foreign x2\n"
+    "   foreign y2\n"
+    "   foreign x3\n"
+    "   foreign y3\n"
+    "   point1 {Vec2.new(this.x1, this.y1)}\n"
+    "   point2 {Vec2.new(this.x2, this.y2)}\n"
+    "   point3 {Vec2.new(this.x3, this.y3)}\n"
+    "   foreign point1=(value)\n"
+    "   foreign point2=(value)\n"
+    "   foreign point3=(value)\n"
+    "}\n"
+    "foreign class Quad {\n"
+    "   construct new(point1, point2, point3, point4) {}\n"
+    "   foreign x1\n"
+    "   foreign y1\n"
+    "   foreign x2\n"
+    "   foreign y2\n"
+    "   foreign x3\n"
+    "   foreign y3\n"
+    "   foreign x4\n"
+    "   foreign y4\n"
+    "   point1 {Vec2.new(this.x1, this.y1)}\n"
+    "   point2 {Vec2.new(this.x2, this.y2)}\n"
+    "   point3 {Vec2.new(this.x3, this.y3)}\n"
+    "   point4 {Vec2.new(this.x4, this.y4)}\n"
+    "   foreign point1=(value)\n"
+    "   foreign point2=(value)\n"
+    "   foreign point3=(value)\n"
+    "   foreign point4=(value)\n"
+    "}\n"
+    "foreign class Rectangle {\n"
+    "   construct new(pos, width, height) {}\n"
+    "   foreign x\n"
+    "   foreign y\n"
+    "   foreign width\n"
+    "   foreign height\n"
+    "   pos { Vec2.new(this.x, this.y) }\n"
+    "   foreign pos=(value)\n"
+    "   foreign width=(value)\n"
+    "   foreign height=(value)\n"
+    "}\n"
+    "foreign class Circle {\n"
+    "   construct new(center, radius) {}\n"
+    "   foreign x\n"
+    "   foreign y\n"
+    "   foreign radius\n"
+    "   center { Vec2.new(this.x, this.y) }\n"
+    "   foreign center=(value)\n"
+    "   foreign radius=(value)\n"
+    "}\n"
     ;
 
     const char* mageCameraModule = 
@@ -151,7 +205,7 @@ namespace mage {
     "   foreign [index]=(value)\n"
     "}\n"
     "foreign class Font {\n"
-    "   construct load(path, size)\n"
+    "   construct load(path, size) {}\n"
     "}\n"
     ;
 
@@ -310,10 +364,19 @@ namespace mage {
     "foreign class Texture {\n"
     "   construct loadFromImage(image) {}\n"
     "   static load(path) {\n"
-    "       return Texture.loadFromImage(Image.new)\n"
+    "       return Texture.loadFromImage(Image.load(path))\n"
     "   }\n"
     "   foreign width\n"
     "   foreign height\n"
+    "}\n"
+    "foreign class Shader {\n"
+    "   construct load(path) {}\n"
+    "   foreign setBool(uniform, val)\n"
+    "   foreign setInt(uniform, val)\n"
+    "   foreign setFloat(uniform, val)\n"
+    "   foreign setVec2(uniform, val)\n"
+    "   foreign setVec3(uniform, val)\n"
+    "   foreign setVec4(uniform, val)\n"
     "}\n"
     ;
 
@@ -997,7 +1060,44 @@ namespace mage {
     }
 
     //== Shader 
+    void shaderConstructor(WrenVM* vm) {
+        arcana::Shader* shader = SET_FOREIGN(arcana::Shader);
+        new (shader) arcana::Shader(GET_STR(1), GET_INT(2));
+    }
 
+    void shaderSetBool(WrenVM* vm) {
+        arcana::Shader* shader = (arcana::Shader*)GET_FOREIGN(0);
+        shader->setBool(GET_STR(1), GET_BOOL(2));
+    }
+
+    void shaderSetInt(WrenVM* vm) {
+        arcana::Shader* shader = (arcana::Shader*)GET_FOREIGN(0);
+        shader->setInt(GET_STR(1), GET_INT(2));
+    }
+
+    void shaderSetFloat(WrenVM* vm) {
+        arcana::Shader* shader = (arcana::Shader*)GET_FOREIGN(0);
+        shader->setFloat(GET_STR(1), GET_FLOAT(2));
+    }
+
+    void shaderSetVec2(WrenVM* vm) {
+        arcana::Shader* shader = (arcana::Shader*)GET_FOREIGN(0);
+        shader->setVec2(GET_STR(1), *(arcana::Vector2*)GET_FOREIGN(2));
+    }
+
+    void shaderSetVec3(WrenVM* vm) {
+        arcana::Shader* shader = (arcana::Shader*)GET_FOREIGN(0);
+        shader->setVec3(GET_STR(1), *(arcana::Vector3*)GET_FOREIGN(2));
+    }
+
+    void shaderSetVec4(WrenVM* vm) {
+        arcana::Shader* shader = (arcana::Shader*)GET_FOREIGN(0);
+        shader->setVec4(GET_STR(1), *(arcana::Vector4*)GET_FOREIGN(2));
+    }
+
+    void shaderDestructor(void* data) {
+        ((arcana::Shader*)data)->~Shader();
+    }
 
     //== Font
     void fontConstructor(WrenVM* vm) {
@@ -1039,22 +1139,22 @@ namespace mage {
     }
 
     void lineGetStartX(WrenVM* vm) {
-        arcana::Line* line = (arcana::Line*)GET_FOREIGN(1);
+        arcana::Line* line = (arcana::Line*)GET_FOREIGN(0);
         SET_NUM(line->startPoint.x, 0);
     }
 
     void lineGetStartY(WrenVM* vm) {
-        arcana::Line* line = (arcana::Line*)GET_FOREIGN(1);
+        arcana::Line* line = (arcana::Line*)GET_FOREIGN(0);
         SET_NUM(line->startPoint.y, 0);
     }
 
     void lineGetEndX(WrenVM* vm) {
-        arcana::Line* line = (arcana::Line*)GET_FOREIGN(1);
+        arcana::Line* line = (arcana::Line*)GET_FOREIGN(0);
         SET_NUM(line->endPoint.x, 0);
     }
 
     void lineGetEndY(WrenVM* vm) {
-        arcana::Line* line = (arcana::Line*)GET_FOREIGN(1);
+        arcana::Line* line = (arcana::Line*)GET_FOREIGN(0);
         SET_NUM(line->endPoint.y, 0);
     }
 
@@ -1066,6 +1166,205 @@ namespace mage {
     void lineSetEndPos(WrenVM* vm) {
         arcana::Line* line = ((arcana::Line*)GET_FOREIGN(0));
         line->endPoint = *((arcana::Vector2*)GET_FOREIGN(1));
+    }
+
+    //== Triangle
+    void triangleConstructor(WrenVM* vm) {
+        arcana::Triangle* triangle = SET_FOREIGN(arcana::Triangle);
+        new (triangle) arcana::Triangle(*(arcana::Vector2*)GET_FOREIGN(1), 
+                                        *(arcana::Vector2*)GET_FOREIGN(2),
+                                        *(arcana::Vector2*)GET_FOREIGN(3));
+    }
+
+    VM_FUNC(triangleGetX1) {
+        arcana::Triangle* triangle = (arcana::Triangle*)GET_FOREIGN(0);
+        SET_NUM(triangle->point1.x, 0);
+    }
+
+    VM_FUNC(triangleGetX2) {
+        arcana::Triangle* triangle = (arcana::Triangle*)GET_FOREIGN(0);
+        SET_NUM(triangle->point2.x, 0);
+    }
+
+    VM_FUNC(triangleGetX3) {
+        arcana::Triangle* triangle = (arcana::Triangle*)GET_FOREIGN(0);
+        SET_NUM(triangle->point3.x, 0);
+    }
+
+    VM_FUNC(triangleGetY1) {
+        arcana::Triangle* triangle = (arcana::Triangle*)GET_FOREIGN(0);
+        SET_NUM(triangle->point1.y, 0);
+    }
+
+    VM_FUNC(triangleGetY2) {
+        arcana::Triangle* triangle = (arcana::Triangle*)GET_FOREIGN(0);
+        SET_NUM(triangle->point2.y, 0);
+    }
+
+    VM_FUNC(triangleGetY3) {
+        arcana::Triangle* triangle = (arcana::Triangle*)GET_FOREIGN(0);
+        SET_NUM(triangle->point3.y, 0);
+    }
+
+    VM_FUNC(triangleSetPoint1) {
+        arcana::Triangle* triangle = (arcana::Triangle*)GET_FOREIGN(0);
+        triangle->point1 = *(arcana::Vector2*)GET_FOREIGN(1);
+    }
+
+    VM_FUNC(triangleSetPoint2) {
+        arcana::Triangle* triangle = (arcana::Triangle*)GET_FOREIGN(0);
+        triangle->point2 = *(arcana::Vector2*)GET_FOREIGN(1);
+    }
+
+    VM_FUNC(triangleSetPoint3) {
+        arcana::Triangle* triangle = (arcana::Triangle*)GET_FOREIGN(0);
+        triangle->point3 = *(arcana::Vector2*)GET_FOREIGN(1);
+    }
+    
+    //== Quad
+    VM_FUNC(quadConstructor) {
+        arcana::Quadrilateral* quad = SET_FOREIGN(arcana::Quadrilateral);
+        new (quad) arcana::Quadrilateral(*(arcana::Vector2*)GET_FOREIGN(1), 
+                                         *(arcana::Vector2*)GET_FOREIGN(2),
+                                         *(arcana::Vector2*)GET_FOREIGN(3),
+                                         *(arcana::Vector2*)GET_FOREIGN(4));
+    }
+
+    VM_FUNC(quadGetX1) {
+        arcana::Quadrilateral* quad = (arcana::Quadrilateral*)GET_FOREIGN(0);
+        SET_NUM(quad->point1.x, 0);
+    }
+
+    VM_FUNC(quadGetX2) {
+        arcana::Quadrilateral* quad = (arcana::Quadrilateral*)GET_FOREIGN(0);
+        SET_NUM(quad->point2.x, 0);
+    }
+
+    VM_FUNC(quadGetX3) {
+        arcana::Quadrilateral* quad = (arcana::Quadrilateral*)GET_FOREIGN(0);
+        SET_NUM(quad->point3.x, 0);
+    }
+
+    VM_FUNC(quadGetX4) {
+        arcana::Quadrilateral* quad = (arcana::Quadrilateral*)GET_FOREIGN(0);
+        SET_NUM(quad->point4.x, 0);
+    }
+
+    VM_FUNC(quadGetY1) {
+        arcana::Quadrilateral* quad = (arcana::Quadrilateral*)GET_FOREIGN(0);
+        SET_NUM(quad->point1.y, 0);
+    }
+
+    VM_FUNC(quadGetY2) {
+        arcana::Quadrilateral* quad = (arcana::Quadrilateral*)GET_FOREIGN(0);
+        SET_NUM(quad->point2.y, 0);
+    }
+
+    VM_FUNC(quadGetY3) {
+        arcana::Quadrilateral* quad = (arcana::Quadrilateral*)GET_FOREIGN(0);
+        SET_NUM(quad->point3.y, 0);
+    }
+
+    VM_FUNC(quadGetY4) {
+        arcana::Quadrilateral* quad = (arcana::Quadrilateral*)GET_FOREIGN(0);
+        SET_NUM(quad->point4.y, 0);
+    }
+
+    VM_FUNC(quadSetPoint1) {
+        arcana::Quadrilateral* quad = (arcana::Quadrilateral*)GET_FOREIGN(0);
+        quad->point1 = *(arcana::Vector2*)GET_FOREIGN(1);
+    }
+
+    VM_FUNC(quadSetPoint2) {
+        arcana::Quadrilateral* quad = (arcana::Quadrilateral*)GET_FOREIGN(0);
+        quad->point2 = *(arcana::Vector2*)GET_FOREIGN(1);
+    }
+
+    VM_FUNC(quadSetPoint3) {
+        arcana::Quadrilateral* quad = (arcana::Quadrilateral*)GET_FOREIGN(0);
+        quad->point3 = *(arcana::Vector2*)GET_FOREIGN(1);
+    }
+
+    VM_FUNC(quadSetPoint4) {
+        arcana::Quadrilateral* quad = (arcana::Quadrilateral*)GET_FOREIGN(0);
+        quad->point4 = *(arcana::Vector2*)GET_FOREIGN(1);
+    }
+
+    //== Rectangle
+    VM_FUNC(rectangleConstructor) {
+        arcana::Rectangle* rect = SET_FOREIGN(arcana::Rectangle);
+        new (rect) arcana::Rectangle(*(arcana::Vector2*)GET_FOREIGN(1), 
+                                       GET_INT(2),
+                                       GET_INT(3)
+        );
+    }
+
+    VM_FUNC(rectangleGetX) {
+        arcana::Rectangle* rect = (arcana::Rectangle*)GET_FOREIGN(0);
+        SET_NUM(rect->point.x, 0);
+    }
+
+    VM_FUNC(rectangleGetY) {
+        arcana::Rectangle* rect = (arcana::Rectangle*)GET_FOREIGN(0);
+        SET_NUM(rect->point.y, 0);
+    }
+
+    VM_FUNC(rectangleGetWidth) {
+        arcana::Rectangle* rect = (arcana::Rectangle*)GET_FOREIGN(0);
+        SET_NUM(rect->width, 0);
+    }
+
+    VM_FUNC(rectangleGetHeight) {
+        arcana::Rectangle* rect = (arcana::Rectangle*)GET_FOREIGN(0);
+        SET_NUM(rect->height, 0);
+    }
+
+    VM_FUNC(rectangleSetPos) {
+        arcana::Rectangle* rect = (arcana::Rectangle*)GET_FOREIGN(0);
+        rect->point = *(arcana::Vector2*)GET_FOREIGN(1);
+    }
+
+    VM_FUNC(rectangleSetWidth) {
+        arcana::Rectangle* rect = (arcana::Rectangle*)GET_FOREIGN(0);
+        rect->width = GET_FLOAT(1);
+    }
+
+    VM_FUNC(rectangleSetHeight) {
+        arcana::Rectangle* rect = (arcana::Rectangle*)GET_FOREIGN(0);
+        rect->height = GET_FLOAT(1);
+    }
+
+    //== Circle
+    VM_FUNC(circleConstructor) {
+        arcana::Circle* circle= SET_FOREIGN(arcana::Circle);
+        new (circle) arcana::Circle(*(arcana::Vector2*)GET_FOREIGN(1), 
+                                       GET_INT(2)
+        );
+    }
+
+    VM_FUNC(circleGetX) {
+        arcana::Circle* circle = (arcana::Circle*)GET_FOREIGN(0);
+        SET_NUM(circle->center.x, 0);
+    }
+
+    VM_FUNC(circleGetY) {
+        arcana::Circle* circle = (arcana::Circle*)GET_FOREIGN(0);
+        SET_NUM(circle->center.y, 0);
+    }
+
+    VM_FUNC(circleGetRadius) {
+        arcana::Circle* circle = (arcana::Circle*)GET_FOREIGN(0);
+        SET_NUM(circle->radius, 0);
+    }
+
+    VM_FUNC(circleSetCenter) {
+        arcana::Circle* circle = (arcana::Circle*)GET_FOREIGN(0);
+        circle->center = *(arcana::Vector2*)GET_FOREIGN(1);
+    }
+
+    VM_FUNC(circleSetRadius) {
+        arcana::Circle* circle = (arcana::Circle*)GET_FOREIGN(0);
+        circle->radius = GET_FLOAT(1);
     }
 
     // === END MAGE FUNCTION DEFINITIONS
@@ -1380,12 +1679,57 @@ namespace mage {
                 .declForeignFn("endY", false, lineGetEndY)
                 .declForeignFn("startPos=(_)", false, lineSetStartPos)
                 .declForeignFn("endPos=(_)", false, lineSetEndPos)
-            .declClass("Triangle") // TODO
-            .declClass("Quadrilateral") // TODO
-            .declClass("Rectangle") // TODO
-            .declClass("Circle") // TODO
+            .declClass("Triangle") 
+                .declForeignAlloc(triangleConstructor)
+                .declForeignFn("x1", false, triangleGetX1)
+                .declForeignFn("y1", false, triangleGetY1)
+                .declForeignFn("x2", false, triangleGetX2)
+                .declForeignFn("y2", false, triangleGetY2)
+                .declForeignFn("x3", false, triangleGetX3)
+                .declForeignFn("y3", false, triangleGetY3)
+                .declForeignFn("point1=(_)", false, triangleSetPoint1)
+                .declForeignFn("point2=(_)", false, triangleSetPoint2)
+                .declForeignFn("point3=(_)", false, triangleSetPoint3)
+            .declClass("Quad")
+                .declForeignAlloc(quadConstructor)
+                .declForeignFn("x1", false, quadGetX1)
+                .declForeignFn("y1", false, quadGetY1)
+                .declForeignFn("x2", false, quadGetX2)
+                .declForeignFn("y2", false, quadGetY2)
+                .declForeignFn("x3", false, quadGetX3)
+                .declForeignFn("y3", false, quadGetY3)
+                .declForeignFn("x4", false, quadGetX4)
+                .declForeignFn("y4", false, quadGetY4)
+                .declForeignFn("point1=(_)", false, quadSetPoint1)
+                .declForeignFn("point2=(_)", false, quadSetPoint2)
+                .declForeignFn("point3=(_)", false, quadSetPoint3)
+                .declForeignFn("point4=(_)", false, quadSetPoint4)
+            .declClass("Rectangle")
+                .declForeignAlloc(rectangleConstructor)
+                .declForeignFn("x", false, rectangleGetX)
+                .declForeignFn("y", false, rectangleGetY)
+                .declForeignFn("width", false, rectangleGetWidth)
+                .declForeignFn("height", false, rectangleGetHeight)
+                .declForeignFn("pos=(_)", false, rectangleSetPos)
+                .declForeignFn("width=(_)", false, rectangleSetWidth)
+                .declForeignFn("height=(_)", false, rectangleSetHeight)
+            .declClass("Circle")
+                .declForeignAlloc(circleConstructor)
+                .declForeignFn("x", false, circleGetX)
+                .declForeignFn("y", false, circleGetY)
+                .declForeignFn("radius", false, circleGetRadius)
+                .declForeignFn("center=(_)", false, circleSetCenter)
+                .declForeignFn("radius=(_)", false, circleSetRadius)        
         .declModule("mage-gfx")
-            .declClass("Shader") // TODO
+            .declClass("Shader")
+                .declForeignAlloc(shaderConstructor)
+                .declForeignFn("setBool(_,_)", false, shaderSetBool)
+                .declForeignFn("setInt(_,_)", false, shaderSetInt)
+                .declForeignFn("setFloat(_,_)", false, shaderSetFloat)
+                .declForeignFn("setVec2(_,_)", false, shaderSetVec2)
+                .declForeignFn("setVec3(_,_)", false, shaderSetVec3)
+                .declForeignFn("setVec4(_,_)", false, shaderSetVec4)
+                .declForeignFinalise(shaderDestructor)
             .declClass("Texture")
                 .declForeignAlloc(texConstructor)
                 .declForeignFn("width", false, texGetWidth)
