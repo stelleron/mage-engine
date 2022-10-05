@@ -432,6 +432,14 @@ namespace mage {
     "}\n"
     "class RenderContext {\n"
     "   construct new() {}\n"
+    "   foreign drawPoint(point, color, z)\n"
+    "   foreign drawLine(line, color, z)\n"
+    "   foreign drawTriangle(triangle, color, z)\n"
+    "   foreign drawQuad(quad, color, z)\n"
+    "   foreign drawRect(rectangle, color, z)\n"
+    "   foreign drawCircle(circle, color, z)\n"
+    "   foreign drawTex(tex, pos, scale, z, rotation, color)\n"
+    "   foreign drawPartTex(tex, rect, pos, scale, z, rotation, color)\n"
     "}\n"
     ;
     
@@ -1367,6 +1375,74 @@ namespace mage {
         circle->radius = GET_FLOAT(1);
     }
 
+    //== RenderContext
+    VM_FUNC(renderContextDrawPoint) {
+        UserData* uData = (UserData*)GET_USER_DATA();
+        uData->render_ctx->draw(
+            arcana::drawable::make(*(arcana::Point*)GET_FOREIGN(1), *(arcana::Color*)GET_FOREIGN(2), GET_INT(3))
+        );
+    }
+
+    VM_FUNC(renderContextDrawLine) {
+        UserData* uData = (UserData*)GET_USER_DATA();
+        uData->render_ctx->draw(
+            arcana::drawable::make(*(arcana::Line*)GET_FOREIGN(1), *(arcana::Color*)GET_FOREIGN(2), GET_INT(3))
+        );
+    }
+
+    VM_FUNC(renderContextDrawTriangle) {
+        UserData* uData = (UserData*)GET_USER_DATA();
+        uData->render_ctx->draw(
+            arcana::drawable::make(*(arcana::Triangle*)GET_FOREIGN(1), *(arcana::Color*)GET_FOREIGN(2), GET_INT(3))
+        );
+    }
+    
+    VM_FUNC(renderContextDrawQuad) {
+        UserData* uData = (UserData*)GET_USER_DATA();
+        uData->render_ctx->draw(
+            arcana::drawable::make(*(arcana::Quadrilateral*)GET_FOREIGN(1), *(arcana::Color*)GET_FOREIGN(2), GET_INT(3))
+        );
+    }
+
+    VM_FUNC(renderContextDrawRect) {
+        UserData* uData = (UserData*)GET_USER_DATA();
+        uData->render_ctx->draw(
+            arcana::drawable::make(*(arcana::Rectangle*)GET_FOREIGN(1), *(arcana::Color*)GET_FOREIGN(2), GET_INT(3))
+        );
+    }
+
+    VM_FUNC(renderContextDrawCircle) {
+        UserData* uData = (UserData*)GET_USER_DATA();
+        uData->render_ctx->draw(
+            arcana::drawable::make(*(arcana::Circle*)GET_FOREIGN(1), *(arcana::Color*)GET_FOREIGN(2), GET_INT(3))
+        );
+    }
+
+    VM_FUNC(renderContextDrawTex) {
+        UserData* uData = (UserData*)GET_USER_DATA();
+        uData->render_ctx->draw(
+            *(arcana::Texture*)GET_FOREIGN(1),
+            *(arcana::Vector2*)GET_FOREIGN(2),
+            *(arcana::Vector2*)GET_FOREIGN(3),
+            GET_FLOAT(4),
+            GET_FLOAT(5),
+            *(arcana::Color*)GET_FOREIGN(6)
+        );
+    }
+
+    VM_FUNC(renderContextDrawPartTex) {
+        UserData* uData = (UserData*)GET_USER_DATA();
+        uData->render_ctx->draw(
+            *(arcana::Texture*)GET_FOREIGN(1),
+            *(arcana::Rectangle*)GET_FOREIGN(2),
+            *(arcana::Vector2*)GET_FOREIGN(3),
+            *(arcana::Vector2*)GET_FOREIGN(4),
+            GET_FLOAT(5),
+            GET_FLOAT(6),
+            *(arcana::Color*)GET_FOREIGN(7)
+        );
+    }
+
     // === END MAGE FUNCTION DEFINITIONS
 
     // Print function for the Wren VM
@@ -1756,6 +1832,15 @@ namespace mage {
                 .declForeignFn("opacity=(_)", false, appConfigSetWindowOpacity)
                 .declForeignFn("min_size=(_)", false, appConfigSetWindowMinSize)
                 .declForeignFn("max_size=(_)", false, appConfigSetWindowMaxSize)
+            .declClass("RenderContext")
+                .declForeignFn("drawPoint(_,_,_)", false, renderContextDrawPoint)
+                .declForeignFn("drawLine(_,_,_)", false, renderContextDrawLine)
+                .declForeignFn("drawTriangle(_,_,_)", false, renderContextDrawTriangle)
+                .declForeignFn("drawQuad(_,_,_)", false, renderContextDrawQuad)
+                .declForeignFn("drawRect(_,_,_)", false, renderContextDrawRect)
+                .declForeignFn("drawCircle(_,_,_)", false, renderContextDrawCircle)
+                .declForeignFn("drawTex(_,_,_,_,_,_)", false, renderContextDrawTex)
+                .declForeignFn("drawPartTex(_,_,_,_,_,_,_)", false, renderContextDrawPartTex)
         ;
         MAGE_INFO("Wren: Declared the MAGE library!");
     }

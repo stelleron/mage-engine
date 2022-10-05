@@ -300,7 +300,7 @@ namespace arcana {
         BATCH_SPACE_ASSERT(startIndex, 37);
 
         // Now time to add all of the vertices to the vertex array
-        vArray[startIndex] = Vertex(circle.center);
+        vArray[startIndex] = Vertex(Vector3(circle.center.x, circle.center.y, circle.z), circle.color);
         for (int x = 0; x < NUM_SECTORS; x++) {
             vArray[startIndex + x + 1] = Vertex(
             Vector3(
