@@ -38,7 +38,7 @@ namespace arcana {
         if(!success)
         {
             glGetShaderInfoLog(id, 512, NULL, infoLog);
-            LOG(infoLog);
+            ERROR(infoLog);
         }
     }
 
